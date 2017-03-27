@@ -5,43 +5,76 @@
 #include "boost/dynamic_bitset.hpp"
 #include "SymplecticPauli.h"
 
+#include <exception>
+
 using namespace boost;
 
 SymplecticPauli::SymplecticPauli(){
     nQubits = 0;
-    xBits = dynamic_bitset<> ();
-    zBits = dynamic_bitset<> ();
-}
-SymplecticPauli::SymplecticPauli(bInt nQubits, bInt xNum, bInt zNum) {
-    xBits =  dynamic_bitset<> (nQubits);
-    zBits = dynamic_bitset<> (nQubits);
-    for (bInt i = 0; i < xBits.size(); i++) {
-        xBits[i] = xNum / (2 ^ i);
-        zBits[i] = zNum / (2 ^ i);
-    }
+    xBits = dynamic_bitset<> (0);
+    zBits = dynamic_bitset<> (0);
 }
 
-SymplecticPauli::SymplecticPauli(bInt nQubits, dynamic_bitset &xbits, dynamic_bitset &zbits){
+SymplecticPauli::SymplecticPauli(bInt NQubits){
+    nQubits = NQubits;
+    xBits = dynamic_bitset<> (NQubits);
+    zBits = dynamic_bitset<> (NQubits);
+}
+
+SymplecticPauli::SymplecticPauli(bInt NQubits, int xNum, int zNum) {
+    nQubits = NQubits;
+    xBits =  dynamic_bitset<> (nQubits, xNum);
+    zBits = dynamic_bitset<> (nQubits, zNum);
+}
+
+SymplecticPauli::SymplecticPauli(bInt NQubits, dynamic_bitset<> &xbits, dynamic_bitset<> &zbits){
+    nQubits=NQubits;
     xBits=xbits;
-   zBits=zbits;
+    zBits=zbits;
 }
 
-SymplecticPauli::operator*(SymplecticPauli &p2) {
-    dynamic_bitset<> newX = this->xBits^p2.xBits;
-    dynamic_bitset<> newZ = this->zBits^p2.zBits;
-    return SymplecticPauli(this->nQubits, newX, newZ);
+SymplecticPauli& SymplecticPauli::operator *=(SymplecticPauli &p2) {
+    if (this->nQubits!=p2.nQubits){
+        throw "Pauli operators must act on the same number of qubits.";
+    }
+    this->xBits = this->xBits^p2.xBits;
+    this->zBits = this->zBits^p2.zBits;
+    return *this;
 }
 
-dynamic_bitset SymplecticPauli::XBits() const {
+SymplecticPauli SymplecticPauli::operator *(SymplecticPauli &p2){
+    SymplecticPauli p(this->nQubits, this->xBits, this->zBits);
+    p *= p2;
+    return p;
+}
+
+bool SymplecticPauli::operator ==(SymplecticPauli &p2){
+    if (this->nQubits!=p2.nQubits){
+        return false;
+    }
+    if (this->xBits != p2.xBits){
+        return false;
+    }
+    if (this->zBits != p2.zBits){
+        return false;
+    }
+    return true;
+}
+
+bInt SymplecticPauli::NQubits() const{
+    return this->nQubits;
+}
+
+dynamic_bitset<> SymplecticPauli::XBits() const {
     return this->xBits;
 }
 
-dynamic_bitset SymplecticPauli::ZBits() const {
+dynamic_bitset<> SymplecticPauli::ZBits() const {
     return  this->zBits;
 }
 
 bool commutivityTest(SymplecticPauli& p1, SymplecticPauli& p2) {
-    unsigned long total= ((p1.XBits()^p2.ZBits()).count() +
+    unsigned long total = ((p1.XBits()^p2.ZBits()).count() +
                          (p1.ZBits()^p2.XBits()).count());
     return (total%2)==0;
 }

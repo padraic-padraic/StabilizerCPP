@@ -15,12 +15,15 @@ class SymplecticPauli {
 public:
     SymplecticPauli();
     SymplecticPauli(bInt nQubits);
-    SymplecticPauli(bInt nQubits, bInt xNum, bInt zNum);
+    SymplecticPauli(bInt nQubits, int xNum, int zNum);
     SymplecticPauli(bInt nQubits,  dynamic_bitset<>& xBits, dynamic_bitset<>& zBits);
+    bInt NQubits() const;
     dynamic_bitset<> XBits() const;
     dynamic_bitset<> ZBits() const;
 
-    SymplecticPauli operator *(SymplecticPauli& p1, SymplecticPauli& p2);
+    SymplecticPauli operator *(SymplecticPauli& p2);
+    SymplecticPauli& operator *=(SymplecticPauli& p2);
+    bool operator ==(SymplecticPauli& p2);
 
 private:
     bInt nQubits;
