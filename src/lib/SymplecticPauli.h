@@ -33,4 +33,8 @@ private:
 
 bool commutivityTest(SymplecticPauli& p1, SymplecticPauli& p2);
 
+struct PauliHash {
+    size_t operator()(const SymplecticPauli &p) const;
+};
+
 #endif //STABILIZERCPP_SYMPLECTICPAULI_H

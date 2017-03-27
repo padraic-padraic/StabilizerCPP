@@ -6,6 +6,8 @@
 #include "SymplecticPauli.h"
 
 #include <exception>
+#include <string>
+#include <functional>
 
 using namespace boost;
 
@@ -77,4 +79,11 @@ bool commutivityTest(SymplecticPauli& p1, SymplecticPauli& p2) {
     unsigned long total = ((p1.XBits()^p2.ZBits()).count() +
                          (p1.ZBits()^p2.XBits()).count());
     return (total%2)==0;
+}
+
+size_t PauliHash::operator()(const SymplecticPauli &p) const{
+    std::string temp = std::to_string(p.NQubits()) +
+                       std::to_string(p.XBits().to_ulong())+
+                       std::to_string(p.ZBits().to_ulong());
+    return std::hash<std::string>()(temp);
 }

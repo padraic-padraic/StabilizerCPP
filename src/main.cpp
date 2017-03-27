@@ -1,6 +1,6 @@
 #include <iostream>
-#include <SymplecticPauli.h>
-#include "StabilizerGroup.h"
+#include "SymplecticPauli.h"
+//#include "StabilizerGroup.h"
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
