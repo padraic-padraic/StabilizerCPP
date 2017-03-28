@@ -9,16 +9,19 @@
 #include <unordered_set>
 #include <vector>
 
+typedef std::unordered_set<SymplecticPauli, PauliHash> PauliSet;
 
 class StabilizerGroup {
-    std::unordered_set<SymplecticPauli, PauliHash> generators;
-    std::unordered_set<SymplecticPauli, PauliHash> members;
+    PauliSet generators;
+    PauliSet members;
     void generate(const SymplecticPauli& element);
 public:
     StabilizerGroup();
     StabilizerGroup(std::vector<SymplecticPauli> generators);
     int order();
     void add(const SymplecticPauli& element);
+    const PauliSet Generators();
+    const int nGenerators();
 };
 
 

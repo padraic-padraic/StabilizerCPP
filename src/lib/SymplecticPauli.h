@@ -16,15 +16,19 @@ public:
     SymplecticPauli();
     SymplecticPauli(bInt nQubits);
     SymplecticPauli(bInt nQubits, int xNum, int zNum);
-    SymplecticPauli(bInt nQubits,  dynamic_bitset<>& xBits, dynamic_bitset<>& zBits);
+    SymplecticPauli(bInt nQubits, int Num);
+    SymplecticPauli(const SymplecticPauli& p_copy);
     bInt NQubits() const;
     dynamic_bitset<> XBits() const;
     dynamic_bitset<> ZBits() const;
 
-    SymplecticPauli operator *(SymplecticPauli& p2);
-    SymplecticPauli& operator *=(SymplecticPauli& p2);
+    SymplecticPauli operator *(const SymplecticPauli& p2) const;
+    SymplecticPauli& operator *=(const SymplecticPauli& p2);
 
     inline bool operator ==(const SymplecticPauli& p2);
+    inline bool operator !=(const SymplecticPauli& p2);
+    inline bool operator <(const SymplecticPauli& p2);
+    inline bool operator >(const SymplecticPauli& p2);
 
 private:
     bInt nQubits;
@@ -35,6 +39,11 @@ private:
 bool commutivityTest(SymplecticPauli& p1, SymplecticPauli& p2);
 
 bool operator==(const SymplecticPauli& p1, const SymplecticPauli& p2);
+bool operator!=(const SymplecticPauli& p1, const SymplecticPauli& p2);
+
+
+bool operator<(const SymplecticPauli& p1, const SymplecticPauli& p2);
+bool operator>(const SymplecticPauli& p1, const SymplecticPauli& p2);
 
 struct PauliHash {
     size_t operator()(const SymplecticPauli &p) const;
