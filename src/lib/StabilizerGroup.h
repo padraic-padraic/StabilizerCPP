@@ -13,12 +13,12 @@
 class StabilizerGroup {
     std::unordered_set<SymplecticPauli, PauliHash> generators;
     std::unordered_set<SymplecticPauli, PauliHash> members;
-    void generate(SymplecticPauli& element);
+    void generate(const SymplecticPauli& element);
 public:
     StabilizerGroup();
     StabilizerGroup(std::vector<SymplecticPauli> generators);
     int order();
-    void add(SymplecticPauli& element);
+    void add(const SymplecticPauli& element);
 };
 
 

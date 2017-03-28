@@ -50,17 +50,16 @@ SymplecticPauli SymplecticPauli::operator *(SymplecticPauli &p2){
     return p;
 }
 
-bool SymplecticPauli::operator ==(SymplecticPauli &p2){
-    if (this->nQubits!=p2.nQubits){
-        return false;
-    }
-    if (this->xBits != p2.xBits){
-        return false;
-    }
-    if (this->zBits != p2.zBits){
-        return false;
-    }
-    return true;
+inline bool SymplecticPauli::operator==(const SymplecticPauli& p2){
+    if (this->nQubits != p2.nQubits) { return false; }
+    if (this->xBits != p2.xBits) { return false; }
+    return (this->zBits == p2.zBits);
+}
+
+bool operator ==(const SymplecticPauli& p1, const SymplecticPauli& p2){
+    if (p1.NQubits() != p2.NQubits()) { return false; }
+    if (p1.XBits() != p2.XBits()) { return false; }
+    return (p1.ZBits() == p2.ZBits());
 }
 
 bInt SymplecticPauli::NQubits() const{

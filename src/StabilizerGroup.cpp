@@ -23,7 +23,7 @@ int StabilizerGroup::order(){
     return this->members.size();
 }
 
-void StabilizerGroup::generate(SymplecticPauli& element) {
+void StabilizerGroup::generate(const SymplecticPauli& element) {
     std::pair<std::unordered_set<SymplecticPauli, PauliHash>::iterator, bool> out_pair;
     for (auto i=this->members.begin(); i!=this->members.end(); i++){
         out_pair = this->members.insert(element);
@@ -34,7 +34,7 @@ void StabilizerGroup::generate(SymplecticPauli& element) {
     return;
 }
 
-void StabilizerGroup::add(SymplecticPauli& element) {
+void StabilizerGroup::add(const SymplecticPauli& element) {
     std::pair<std::unordered_set<SymplecticPauli, PauliHash>::iterator, bool> out_pair;
     out_pair = this->members.insert(element);
     if (out_pair.second){
