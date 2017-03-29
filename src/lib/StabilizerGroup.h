@@ -6,6 +6,7 @@
 #define STABILIZERCPP_STABILIZERGROUP_H
 
 #include "SymplecticPauli.h"
+#include <initializer_list>
 #include <unordered_set>
 #include <vector>
 
@@ -18,6 +19,7 @@ class StabilizerGroup {
 public:
     StabilizerGroup();
     StabilizerGroup(std::vector<SymplecticPauli> generators);
+    StabilizerGroup(std::initializer_list<SymplecticPauli> gens);
     int order();
     void add(const SymplecticPauli& element);
     const PauliSet Generators();

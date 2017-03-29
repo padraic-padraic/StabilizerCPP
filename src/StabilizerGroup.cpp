@@ -19,6 +19,13 @@ StabilizerGroup::StabilizerGroup(std::vector<SymplecticPauli> generators) {
     }
 }
 
+
+StabilizerGroup::StabilizerGroup(std::initializer_list<SymplecticPauli> gens) {
+    for(auto i=gens.begin(); i!=gens.end(); i++){
+        this->add(*i);
+    }
+}
+
 int StabilizerGroup::order(){
     return this->members.size();
 }

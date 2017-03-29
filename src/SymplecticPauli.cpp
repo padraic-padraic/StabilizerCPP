@@ -4,10 +4,14 @@
 
 #include "boost/dynamic_bitset.hpp"
 #include "lib/SymplecticPauli.h"
+#include "lib/utils.h"
+
 
 #include <exception>
-#include <string>
 #include <functional>
+#include <iostream>
+#include <string>
+
 
 using namespace boost;
 
@@ -17,23 +21,28 @@ SymplecticPauli::SymplecticPauli(){
     zBits = dynamic_bitset<> (0);
 }
 
-SymplecticPauli::SymplecticPauli(bInt NQubits){
+SymplecticPauli::SymplecticPauli(unsigned int NQubits){
     nQubits = NQubits;
     xBits = dynamic_bitset<> (NQubits);
     zBits = dynamic_bitset<> (NQubits);
 }
 
-SymplecticPauli::SymplecticPauli(bInt NQubits, int xNum, int zNum) {
+SymplecticPauli::SymplecticPauli(unsigned int NQubits, unsigned int xNum, unsigned int zNum) {
     nQubits = NQubits;
     xBits =  dynamic_bitset<> (nQubits, xNum);
     zBits = dynamic_bitset<> (nQubits, zNum);
 }
 
-SymplecticPauli::SymplecticPauli(bInt NQubits, int Num) {
+SymplecticPauli::SymplecticPauli(unsigned int NQubits, unsigned int Num) {
+    unsigned int bnum;
     nQubits = NQubits;
-    zBits = dynamic_bitset<>(Num&(2^NQubits));
+    bnum = Num % uiPow(2, NQubits);
+    std::cout << Num << "\t" << bnum;
+    zBits = dynamic_bitset<>(NQubits, bnum);
     Num >>= NQubits;
-    xBits = dynamic_bitset<>(Num&(2^NQubits));
+    bnum = Num % uiPow(2, NQubits);
+    std::cout <<"\t" << Num << "\t" << bnum <<std::endl;
+    xBits = dynamic_bitset<>(NQubits, bnum);
 }
 
 SymplecticPauli::SymplecticPauli(const SymplecticPauli& p){
@@ -107,8 +116,8 @@ bool operator !=(const SymplecticPauli& p1, const SymplecticPauli& p2){
     return !(p1==p2);
 }
 
-bInt SymplecticPauli::NQubits() const{
-    return this->nQubits;
+unsigned int SymplecticPauli::NQubits() const{
+    return static_cast<unsigned int>(this->nQubits);
 }
 
 dynamic_bitset<> SymplecticPauli::XBits() const {
@@ -124,6 +133,12 @@ bool commutivityTest(SymplecticPauli& p1, SymplecticPauli& p2) {
                          (p1.ZBits()^p2.XBits()).count());
     return (total%2)==0;
 }
+
+std::ostream& operator<<(std::ostream& os, const SymplecticPauli& p){
+    os << p.NQubits() << "\t" << "X: " << p.XBits().to_ulong() << "  Z: " << p.ZBits().to_ulong();
+    return os;
+}
+
 
 size_t PauliHash::operator()(const SymplecticPauli &p) const{
     std::string temp = std::to_string(p.NQubits()) +
