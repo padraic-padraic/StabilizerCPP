@@ -26,6 +26,8 @@ public:
 
     unsigned long toUlong() const;
 
+    bool commutes(const SymplecticPauli &p2) const;
+
     SymplecticPauli operator *(const SymplecticPauli& p2) const;
     SymplecticPauli& operator *=(const SymplecticPauli& p2);
 
@@ -40,7 +42,7 @@ private:
     dynamic_bitset<> zBits;
 };
 
-bool commutivityTest(SymplecticPauli& p1, SymplecticPauli& p2);
+bool commutivityTest(std::vector<SymplecticPauli>&);
 
 bool operator==(const SymplecticPauli& p1, const SymplecticPauli& p2);
 bool operator!=(const SymplecticPauli& p1, const SymplecticPauli& p2);

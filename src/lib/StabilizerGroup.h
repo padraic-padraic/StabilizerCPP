@@ -29,8 +29,6 @@ public:
     bool operator !=(const StabilizerGroup& g2) const;
 };
 
-//bool operator ==(const StabilizerGroup& g1, const StabilizerGroup& g2);
-//bool operator !=(const StabilizerGroup& g1, const StabilizerGroup& g2);
-
+std::vector<StabilizerGroup> getStabilizerGroups(unsigned int nQubits);
 
 #endif //STABILIZERCPP_STABILIZERGROUP_H

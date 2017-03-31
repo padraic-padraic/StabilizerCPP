@@ -33,32 +33,7 @@ int main() {
     } else {
         std::cout << "Oh" << std::endl;
     }
-    std::vector<StabilizerGroup> groups;
-    std::vector<SymplecticPauli> elements;
-    for (unsigned int i=1; i<uiPow(2,4); i++){
-        elements.push_back(SymplecticPauli(2, i));
-    }
-    std::cout << elements.size() << std::endl;
-    std::vector<bool> mask = getMaskArray(elements.size(), 2);
-    do {
-        StabilizerGroup candidate;
-        for(std::vector<bool>::size_type i=0; i<mask.size(); i++){
-            if (mask[i]){
-                candidate.add(elements[i]);
-            }
-        }
-        std::cout << candidate.order() << std::endl;
-        if (candidate.nGenerators()!=2){
-            continue;
-        }
-        if (groups.size()==0){
-            groups.push_back(candidate);
-            continue;
-        }
-        if (std::none_of(groups.begin(), groups.end(), [&candidate](StabilizerGroup& g){return candidate==g;})){
-            groups.push_back(candidate);
-        }
-    } while(std::next_permutation(mask.begin(), mask.end()));
+    std::vector<StabilizerGroup> groups = getStabilizerGroups(3);
     std::cout << groups.size() << std::endl;
     return 0;
 }

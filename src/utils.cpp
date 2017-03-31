@@ -3,7 +3,6 @@
 //
 
 #include <algorithm>
-#include <vector>
 #include "lib/SymplecticPauli.h"
 #include "lib/utils.h"
 
@@ -20,11 +19,7 @@ unsigned int uiPow(unsigned int base, unsigned int exp) {
 }
 
 unsigned int factorial(unsigned int n) {
-    if (n<=1) {
-        return 1;
-    } else {
-        return factorial(n-1)*n;
-    }
+    return n <= 1 ? 1 : factorial(n - 1) * n;
 }
 
 unsigned int nCr(unsigned int n, unsigned int r){
@@ -36,4 +31,3 @@ std::vector<bool> getMaskArray(size_t n, unsigned int r){
     std::fill(mask.end()-r, mask.end(), true);
     return mask;
 }
-

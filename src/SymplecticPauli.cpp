@@ -6,13 +6,6 @@
 #include "lib/SymplecticPauli.h"
 #include "lib/utils.h"
 
-
-#include <exception>
-#include <functional>
-#include <iostream>
-#include <string>
-
-
 using namespace boost;
 
 SymplecticPauli::SymplecticPauli(){
@@ -123,10 +116,22 @@ unsigned long SymplecticPauli::toUlong() const {
     return out;
 }
 
-bool commutivityTest(SymplecticPauli& p1, SymplecticPauli& p2) {
-    unsigned long total = ((p1.XBits()^p2.ZBits()).count() +
-                         (p1.ZBits()^p2.XBits()).count());
+bool SymplecticPauli::commutes(const SymplecticPauli &p2) const {
+    if (this->nQubits != p2.nQubits){
+        throw "Cannot test commutivity of operators on different number of qubits";
+    }
+    unsigned long total = ((this->xBits^p2.zBits).count() +
+                         (this->zBits^p2.xBits).count());
     return (total%2)==0;
+}
+
+bool commutivityTest(std::vector<SymplecticPauli>& paulis){
+    for(auto i = paulis.begin(); i!=paulis.end(); i++){
+        for (auto j=i+1; j!=paulis.end(); j++){
+            if (!(*i).commutes(*j)){return false;}
+        }
+    }
+    return true;
 }
 
 std::ostream& operator<<(std::ostream& os, const SymplecticPauli& p){

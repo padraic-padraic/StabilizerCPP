@@ -4,9 +4,7 @@
 
 #include "lib/SymplecticPauli.h"
 #include "lib/StabilizerGroup.h"
-
-#include <algorithm>
-#include <unordered_set>
+#include "lib/utils.h"
 
 
 StabilizerGroup::StabilizerGroup() {
@@ -73,12 +71,35 @@ bool StabilizerGroup::operator!=(const StabilizerGroup &g2) const{
     return !((*this).operator==(g2));
 }
 
-//bool operator==(const StabilizerGroup& g1, const StabilizerGroup &g2){
-//    return g1.operator==(g2);
-//}
-//
-//bool operator!=(const StabilizerGroup& g1, const StabilizerGroup& g2){
-//    return g1.operator!=(g2);
-//}
-
-
+std::vector<StabilizerGroup> getStabilizerGroups(unsigned int nQubits){
+    std::vector<StabilizerGroup> groups;
+    std::vector<SymplecticPauli> elements;
+    for (unsigned int i=1; i<uiPow(2,2*nQubits); i++){
+        elements.push_back(SymplecticPauli(nQubits, i));
+    }
+    std::cout << elements.size() << std::endl;
+    std::vector<bool> mask = getMaskArray(elements.size(), nQubits);
+    std::vector<SymplecticPauli> generatorCandidates;
+    do {
+        StabilizerGroup candidate;
+        for(std::vector<bool>::size_type i=0; i<mask.size(); i++){
+            if (mask[i]){
+                generatorCandidates.push_back(elements[i]);
+            }
+        }
+        if (!commutivityTest(generatorCandidates)){ continue; }
+        candidate = StabilizerGroup(generatorCandidates);
+        if (candidate.nGenerators()!=nQubits){
+            continue;
+        }
+        if (groups.size()==0){
+            groups.push_back(candidate);
+            continue;
+        }
+        if (std::none_of(groups.begin(), groups.end(), [&candidate](StabilizerGroup& g){return candidate==g;})){
+            groups.push_back(candidate);
+        }
+        generatorCandidates.clear();
+    } while(std::next_permutation(mask.begin(), mask.end()));
+    return groups;
+}
