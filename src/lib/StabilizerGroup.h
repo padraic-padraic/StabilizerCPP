@@ -20,11 +20,17 @@ public:
     StabilizerGroup();
     StabilizerGroup(std::vector<SymplecticPauli> generators);
     StabilizerGroup(std::initializer_list<SymplecticPauli> gens);
-    int order();
+    int order() const;
     void add(const SymplecticPauli& element);
     const PauliSet Generators();
     const int nGenerators();
+    bool contains(const SymplecticPauli& p) const;
+    bool operator ==(const StabilizerGroup& g2) const;
+    bool operator !=(const StabilizerGroup& g2) const;
 };
+
+//bool operator ==(const StabilizerGroup& g1, const StabilizerGroup& g2);
+//bool operator !=(const StabilizerGroup& g1, const StabilizerGroup& g2);
 
 
 #endif //STABILIZERCPP_STABILIZERGROUP_H

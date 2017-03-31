@@ -34,14 +34,12 @@ SymplecticPauli::SymplecticPauli(unsigned int NQubits, unsigned int xNum, unsign
 }
 
 SymplecticPauli::SymplecticPauli(unsigned int NQubits, unsigned int Num) {
-    unsigned int bnum;
+    unsigned int bnum, base=uiPow(2,NQubits);
     nQubits = NQubits;
-    bnum = Num % uiPow(2, NQubits);
-    std::cout << Num << "\t" << bnum;
+    bnum = Num % base;
     zBits = dynamic_bitset<>(NQubits, bnum);
     Num >>= NQubits;
-    bnum = Num % uiPow(2, NQubits);
-    std::cout <<"\t" << Num << "\t" << bnum <<std::endl;
+    bnum = Num % base;
     xBits = dynamic_bitset<>(NQubits, bnum);
 }
 
@@ -67,14 +65,10 @@ SymplecticPauli SymplecticPauli::operator *(const SymplecticPauli &p2) const{
 }
 
 inline bool SymplecticPauli::operator<(const SymplecticPauli& p2) {
-    unsigned long x1, x2, z1, z2;
-    x1 = this->xBits.to_ulong();
-    x2 = p2.xBits.to_ulong();
-    z1 = this->zBits.to_ulong();
-    z2 = p2.zBits.to_ulong();
-    if (this->nQubits != p2.nQubits) { return (this->nQubits < p2.nQubits); }
-    if (x1!=x2) { return (x1<x2); }
-    return (z1<z2);
+    if (this->NQubits() != p2.NQubits()){
+        throw "Cannot compare Paulis on diffrent numbers of qubits.";
+    }
+    return this->toUlong() < p2.toUlong();
 }
 
 inline bool SymplecticPauli::operator>(const SymplecticPauli &p2) {
@@ -82,24 +76,19 @@ inline bool SymplecticPauli::operator>(const SymplecticPauli &p2) {
 }
 
 bool operator <(const SymplecticPauli& p1, const SymplecticPauli& p2){
-    unsigned long x1, x2, z1, z2;
-    x1 = p1.XBits().to_ulong();
-    x2 = p2.XBits().to_ulong();
-    z1 = p1.ZBits().to_ulong();
-    z2 = p2.ZBits().to_ulong();
-    if (p1.NQubits() != p2.NQubits()) { return (p1.NQubits() < p2.NQubits()); }
-    if (x1!=x2) { return (x1<x2); }
-    return (z1<z2);
+    if (p1.NQubits() != p2.NQubits()){
+        throw "Cannot compare Paulis on diffrent numbers of qubits.";
+    }
+    return p1.toUlong() < p2.toUlong();
 }
 
 bool operator>(const SymplecticPauli& p1, const SymplecticPauli& p2){
     return !(p1<p2);
 }
 
-inline bool SymplecticPauli::operator==(const SymplecticPauli& p2){
+inline bool SymplecticPauli::operator==(const SymplecticPauli& p2) {
     if (this->nQubits != p2.nQubits) { return false; }
-    if (this->xBits != p2.xBits) { return false; }
-    return (this->zBits == p2.zBits);
+    return this->toUlong() == p2.toUlong();
 }
 
 inline bool SymplecticPauli::operator!=(const SymplecticPauli& p2){
@@ -108,8 +97,7 @@ inline bool SymplecticPauli::operator!=(const SymplecticPauli& p2){
 
 bool operator ==(const SymplecticPauli& p1, const SymplecticPauli& p2){
     if (p1.NQubits() != p2.NQubits()) { return false; }
-    if (p1.XBits() != p2.XBits()) { return false; }
-    return (p1.ZBits() == p2.ZBits());
+    return p1.toUlong() == p2.toUlong();
 }
 
 bool operator !=(const SymplecticPauli& p1, const SymplecticPauli& p2){
@@ -128,6 +116,13 @@ dynamic_bitset<> SymplecticPauli::ZBits() const {
     return  this->zBits;
 }
 
+unsigned long SymplecticPauli::toUlong() const {
+    unsigned long out= this->xBits.to_ulong();
+    out <<= this->NQubits();
+    out += this->zBits.to_ulong();
+    return out;
+}
+
 bool commutivityTest(SymplecticPauli& p1, SymplecticPauli& p2) {
     unsigned long total = ((p1.XBits()^p2.ZBits()).count() +
                          (p1.ZBits()^p2.XBits()).count());
@@ -139,10 +134,9 @@ std::ostream& operator<<(std::ostream& os, const SymplecticPauli& p){
     return os;
 }
 
-
 size_t PauliHash::operator()(const SymplecticPauli &p) const{
     std::string temp = std::to_string(p.NQubits()) +
                        std::to_string(p.XBits().to_ulong())+
                        std::to_string(p.ZBits().to_ulong());
-    return std::hash<std::string>()(temp);
+    return std::hash<std::string>{}(temp);
 }

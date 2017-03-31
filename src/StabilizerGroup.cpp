@@ -4,6 +4,8 @@
 
 #include "lib/SymplecticPauli.h"
 #include "lib/StabilizerGroup.h"
+
+#include <algorithm>
 #include <unordered_set>
 
 
@@ -19,14 +21,13 @@ StabilizerGroup::StabilizerGroup(std::vector<SymplecticPauli> generators) {
     }
 }
 
-
 StabilizerGroup::StabilizerGroup(std::initializer_list<SymplecticPauli> gens) {
     for(auto i=gens.begin(); i!=gens.end(); i++){
         this->add(*i);
     }
 }
 
-int StabilizerGroup::order(){
+int StabilizerGroup::order() const{
     return this->members.size();
 }
 
@@ -58,3 +59,26 @@ const PauliSet StabilizerGroup::Generators() {
 const int StabilizerGroup::nGenerators(){
     return this->generators.size();
 }
+
+bool StabilizerGroup::contains(const SymplecticPauli &p) const {
+    return this->members.find(p)!=this->members.end();
+}
+
+bool StabilizerGroup::operator==(const StabilizerGroup &g2) const{
+    if (this->order() != g2.order()){ return false; }
+    return std::all_of(this->members.begin(), this->members.end(), [&g2](const SymplecticPauli p){return g2.contains(p);});
+}
+
+bool StabilizerGroup::operator!=(const StabilizerGroup &g2) const{
+    return !((*this).operator==(g2));
+}
+
+//bool operator==(const StabilizerGroup& g1, const StabilizerGroup &g2){
+//    return g1.operator==(g2);
+//}
+//
+//bool operator!=(const StabilizerGroup& g1, const StabilizerGroup& g2){
+//    return g1.operator!=(g2);
+//}
+
+

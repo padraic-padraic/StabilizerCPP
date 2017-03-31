@@ -24,6 +24,8 @@ public:
     dynamic_bitset<> XBits() const;
     dynamic_bitset<> ZBits() const;
 
+    unsigned long toUlong() const;
+
     SymplecticPauli operator *(const SymplecticPauli& p2) const;
     SymplecticPauli& operator *=(const SymplecticPauli& p2);
 
