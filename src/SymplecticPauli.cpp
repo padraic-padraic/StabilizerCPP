@@ -3,6 +3,8 @@
 //
 
 #include "boost/dynamic_bitset.hpp"
+#include "Eigen/Dense"
+#include "lib/PauliMatrices.h"
 #include "lib/SymplecticPauli.h"
 #include "lib/utils.h"
 
@@ -130,6 +132,17 @@ bool commutivityTest(std::vector<SymplecticPauli>& paulis){
         }
     }
     return true;
+}
+
+Eigen::MatrixXcd SymplecticPauli::toMatrix() const{
+    MatrixList paulis;
+    for (bInt i=0; i<this->nQubits; i++){
+        if (this->xBits[i]&this->zBits[i]){ paulis.push_back(Y);}
+        else if(this->xBits[i]&!(this->zBits[i])){ paulis.push_back(X); }
+        else if(!(this->xBits[i])&this->zBits[i]){ paulis.push_back(Z); }
+        else {paulis.push_back(Id);}
+    }
+    return tensor(paulis);
 }
 
 std::ostream& operator<<(std::ostream& os, const SymplecticPauli& p){

@@ -35,7 +35,6 @@ Eigen::MatrixXcd kroneckerProduct(const Eigen::MatrixXcd& m1, const Eigen::Matri
 Eigen::MatrixXcd tensor(MatrixList& matrices){
     Eigen::MatrixXcd out = matrices[0];
     for(auto it = (matrices.begin()+1); it!=matrices.end(); it++){
-        std::cout << "Go one round" << std::endl;
         out = kroneckerProduct(out, *it);
     }
     return out;

@@ -6,7 +6,9 @@
 #define STABILIZERCPP_SYMPLECTICPAULI_H
 
 #include "boost/dynamic_bitset.hpp"
+#include "Eigen/Dense"
 #include <iostream>
+#include "PauliMatrices.h"
 
 using namespace boost;
 
@@ -27,6 +29,8 @@ public:
     unsigned long toUlong() const;
 
     bool commutes(const SymplecticPauli &p2) const;
+
+    Eigen::MatrixXcd toMatrix() const;
 
     SymplecticPauli operator *(const SymplecticPauli& p2) const;
     SymplecticPauli& operator *=(const SymplecticPauli& p2);
