@@ -5,9 +5,13 @@
 #ifndef STABILIZERCPP_UTILS_H
 #define STABILIZERCPP_UTILS_H
 
+#include <complex>
 #include <vector>
 #include "SymplecticPauli.h"
 
+typedef std::complex<double> cd;
+
+const std::complex<double> I = std::sqrt(static_cast<cd>(-1));
 
 unsigned int uiPow(unsigned int base, unsigned int exp);
 

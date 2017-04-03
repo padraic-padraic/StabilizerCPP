@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include "lib/PauliMatrices.h"
 #include "lib/SymplecticPauli.h"
 #include "lib/StabilizerGroup.h"
 #include "lib/utils.h"
@@ -30,5 +31,6 @@ int main() {
     std::cout << (test == test2 ? "Woohoo" : "Oh") << std::endl;
     std::vector<StabilizerGroup> groups = getStabilizerGroups(3);
     std::cout << "Output has:" << groups.size()<< " elements." << std::endl;
+    std::cout << Z << std::endl;
     return 0;
 }
