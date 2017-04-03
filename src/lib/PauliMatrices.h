@@ -13,7 +13,7 @@ const Eigen::MatrixXcd X((Eigen::Matrix2cd() << 0,1,1,0).finished());
 const Eigen::MatrixXcd Y((Eigen::Matrix2cd() << 0, -1.*I, 1.*I, 0).finished());
 const Eigen::MatrixXcd Z((Eigen::Matrix2cd() << 1,0,0,-1).finished());
 
-Eigen::MatrixXcd kroneckerProduct(std::vector<Eigen::MatrixXcd> matrices);
 Eigen::MatrixXcd kroneckerProduct(Eigen::MatrixXcd m1, Eigen::MatrixXcd m2);
+Eigen::MatrixXcd tensor(std::vector<Eigen::MatrixXcd> matrices);
 
 #endif //STABILIZERCPP_PAULIMATRICES_H

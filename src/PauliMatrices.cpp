@@ -14,9 +14,9 @@ Eigen::MatrixXcd kroneckerProduct(Eigen::MatrixXcd& m1, Eigen::MatrixXcd& m2){
     return out;
 }
 
-Eigen::MatrixXcd kroneckerProduct(std::vector<Eigen::MatrixXcd>& matrices){
-    Eigen::MatrixXcd out = matrices[0]
-    for(auto i=matrices.begin()+1; i!=matrices.end(); i++){
+Eigen::MatrixXcd tensor(std::vector<Eigen::MatrixXcd>& matrices){
+    Eigen::MatrixXcd out = matrices[0];
+    for(auto i = (matrices.begin()+1); i!=matrices.end(); i++){
         out = kroneckerProduct(out, *i);
     }
     return out;
