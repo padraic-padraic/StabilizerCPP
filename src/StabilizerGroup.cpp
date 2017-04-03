@@ -63,8 +63,7 @@ bool StabilizerGroup::contains(const SymplecticPauli &p) const {
 }
 
 bool StabilizerGroup::operator==(const StabilizerGroup &g2) const{
-    if (this->order() != g2.order()){ return false; }
-    return std::all_of(this->members.begin(), this->members.end(), [&g2](const SymplecticPauli p){return g2.contains(p);});
+    return this->order() == g2.order() && std::all_of(this->members.begin(), this->members.end(), [&g2](const SymplecticPauli p){return g2.contains(p);});
 }
 
 bool StabilizerGroup::operator!=(const StabilizerGroup &g2) const{

@@ -80,8 +80,7 @@ bool operator>(const SymplecticPauli& p1, const SymplecticPauli& p2){
 }
 
 inline bool SymplecticPauli::operator==(const SymplecticPauli& p2) {
-    if (this->nQubits != p2.nQubits) { return false; }
-    return this->toUlong() == p2.toUlong();
+    return this->nQubits == p2.nQubits && this->toUlong() == p2.toUlong();
 }
 
 inline bool SymplecticPauli::operator!=(const SymplecticPauli& p2){
@@ -89,8 +88,7 @@ inline bool SymplecticPauli::operator!=(const SymplecticPauli& p2){
 }
 
 bool operator ==(const SymplecticPauli& p1, const SymplecticPauli& p2){
-    if (p1.NQubits() != p2.NQubits()) { return false; }
-    return p1.toUlong() == p2.toUlong();
+    return p1.NQubits() == p2.NQubits() && p1.toUlong() == p2.toUlong();
 }
 
 bool operator !=(const SymplecticPauli& p1, const SymplecticPauli& p2){
