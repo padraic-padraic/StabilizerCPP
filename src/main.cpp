@@ -32,5 +32,7 @@ int main() {
     std::vector<StabilizerGroup> groups = getStabilizerGroups(3);
     std::cout << "Output has:" << groups.size()<< " elements." << std::endl;
     std::cout << Z << std::endl;
+    MatrixList ms({Z,Id, Id});
+    std::cout << (tensor(ms)) << std::endl;
     return 0;
 }

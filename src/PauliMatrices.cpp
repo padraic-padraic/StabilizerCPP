@@ -2,22 +2,48 @@
 // Created by Padraic Calpin on 03/04/2017.
 //
 #include "lib/PauliMatrices.h"
+#include <initializer_list>
 
 Eigen::MatrixXcd kroneckerProduct(Eigen::MatrixXcd& m1, Eigen::MatrixXcd& m2){
-    Eigen::MatrixXcd out(m1.rows()*m2.rows(), m1.cols()*m2.cols());
-    int blockRows = m2.rows(), blockCols=m2.cols();
-    for (int i=0; i<m1.rows(); i++){
-        for (int j=0; j<m1.cols(); j++){
-            out.block(i,j, blockRows, blockCols) = m1(i,j)*m2;
+    int rows = m1.rows(), cols=m1.cols();
+    int bRows = m2.rows(), bCols=m2.cols();
+    Eigen::MatrixXcd out(rows*bRows, cols*bCols);
+    std::cout << rows << "\t" << cols << std::endl;
+    std::cout << bRows << "\t" << bCols << std::endl;
+    std::cout << out.rows() << "\t" << out.cols() << std::endl;
+    for (int i=0; i<rows; i++){
+        for (int j=0; j<cols; j++){
+            std::cout << rows*i << "\t" << cols*j << "\t" << bRows << "\t" << bCols << std::endl;
+            out.block(bRows*i,bCols*j, bRows, bCols) = m1(i,j)*m2;
         }
     }
     return out;
 }
 
-Eigen::MatrixXcd tensor(std::vector<Eigen::MatrixXcd>& matrices){
-    Eigen::MatrixXcd out = matrices[0];
-    for(auto i = (matrices.begin()+1); i!=matrices.end(); i++){
-        out = kroneckerProduct(out, *i);
+Eigen::MatrixXcd kroneckerProduct(const Eigen::MatrixXcd& m1, const Eigen::MatrixXcd& m2){
+    int rows = m1.rows(), cols=m1.cols();
+    int bRows = m2.rows(), bCols=m2.cols();
+    Eigen::MatrixXcd out(rows*bRows, cols*bCols);
+    for (int i=0; i<rows; i++){
+        for (int j=0; j<cols; j++){
+            out.block(bRows*i,bCols*j, bRows, bCols) = m1(i,j)*m2;
+        }
     }
+    return out;
+}
+
+Eigen::MatrixXcd tensor(MatrixList& matrices){
+    Eigen::MatrixXcd out = matrices[0];
+    for(auto it = (matrices.begin()+1); it!=matrices.end(); it++){
+        std::cout << "Go one round" << std::endl;
+        out = kroneckerProduct(out, *it);
+    }
+    return out;
+}
+
+
+Eigen::MatrixXcd identity(unsigned int dim){
+    Eigen::MatrixXcd out(dim, dim);
+    out.setIdentity();
     return out;
 }
