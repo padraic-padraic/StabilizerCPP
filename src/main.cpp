@@ -28,12 +28,8 @@ int main() {
     std::cout << test.nGenerators() << std::endl;
     std::cout << test2.order() << std::endl;
     std::cout << test2.nGenerators() << std::endl;
-    if (test==test2){
-        std::cout << "Woohoo" << std::endl;
-    } else {
-        std::cout << "Oh" << std::endl;
-    }
+    std::cout << (test == test2 ? "Woohoo" : "Oh") << std::endl;
     std::vector<StabilizerGroup> groups = getStabilizerGroups(3);
-    std::cout << groups.size() << std::endl;
+    std::cout << "Output has:" << groups.size()<< " elements." << std::endl;
     return 0;
 }

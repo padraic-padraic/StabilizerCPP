@@ -120,8 +120,8 @@ bool SymplecticPauli::commutes(const SymplecticPauli &p2) const {
     if (this->nQubits != p2.nQubits){
         throw "Cannot test commutivity of operators on different number of qubits";
     }
-    unsigned long total = ((this->xBits^p2.zBits).count() +
-                         (this->zBits^p2.xBits).count());
+    unsigned long total = ((this->xBits&p2.zBits).count() +
+                         (this->zBits&p2.xBits).count());
     return (total%2)==0;
 }
 
@@ -135,7 +135,12 @@ bool commutivityTest(std::vector<SymplecticPauli>& paulis){
 }
 
 std::ostream& operator<<(std::ostream& os, const SymplecticPauli& p){
-    os << p.NQubits() << "\t" << "X: " << p.XBits().to_ulong() << "  Z: " << p.ZBits().to_ulong();
+    for(bInt i=0; i<p.NQubits(); i++){
+        if (p.XBits()[i]&p.ZBits()[i]){os << "Y";}
+        else if(p.XBits()[i]&!(p.ZBits()[i])){os << "X";}
+        else if(!(p.XBits()[i])&p.ZBits()[i]){os << "Z";}
+        else {os << "I";}
+    }
     return os;
 }
 

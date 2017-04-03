@@ -72,21 +72,24 @@ bool StabilizerGroup::operator!=(const StabilizerGroup &g2) const{
 }
 
 std::vector<StabilizerGroup> getStabilizerGroups(unsigned int nQubits){
+    unsigned int generatorIndex = 0;
     std::vector<StabilizerGroup> groups;
     std::vector<SymplecticPauli> elements;
     for (unsigned int i=1; i<uiPow(2,2*nQubits); i++){
         elements.push_back(SymplecticPauli(nQubits, i));
     }
-    std::cout << elements.size() << std::endl;
+    std::cout << "A total of " <<"\t" << elements.size() << std::endl;
     std::vector<bool> mask = getMaskArray(elements.size(), nQubits);
-    std::vector<SymplecticPauli> generatorCandidates;
+    std::vector<SymplecticPauli> generatorCandidates(nQubits);
     do {
         StabilizerGroup candidate;
         for(std::vector<bool>::size_type i=0; i<mask.size(); i++){
             if (mask[i]){
-                generatorCandidates.push_back(elements[i]);
+                generatorCandidates[generatorIndex] = elements[i];
+                generatorIndex++;
             }
         }
+        generatorIndex = 0;
         if (!commutivityTest(generatorCandidates)){ continue; }
         candidate = StabilizerGroup(generatorCandidates);
         if (candidate.nGenerators()!=nQubits){
@@ -99,7 +102,7 @@ std::vector<StabilizerGroup> getStabilizerGroups(unsigned int nQubits){
         if (std::none_of(groups.begin(), groups.end(), [&candidate](StabilizerGroup& g){return candidate==g;})){
             groups.push_back(candidate);
         }
-        generatorCandidates.clear();
     } while(std::next_permutation(mask.begin(), mask.end()));
+    std::cout << groups.size() << std::endl;
     return groups;
 }
