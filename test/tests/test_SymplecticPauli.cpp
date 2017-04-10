@@ -90,6 +90,10 @@ TEST_F(SPBinaryTests, Commutation) {
     EXPECT_FALSE(p1.commutes(p2));
     EXPECT_TRUE(p2.commutes(p3));
     EXPECT_TRUE(p1.commutes(p3));
+    std::vector<SymplecticPauli> pauli1 {p1,p2,p3};
+    EXPECT_FALSE(commutivityTest(pauli1));
+    std::vector<SymplecticPauli> pauli2 {SymplecticPauli(2,0,1),SymplecticPauli(2,0,0), SymplecticPauli(2,2,0)};
+    EXPECT_TRUE(commutivityTest(pauli2));
 }
 
 TEST_F(SPBinaryTests, Equality) {

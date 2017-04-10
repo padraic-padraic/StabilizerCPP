@@ -5,6 +5,7 @@
 #ifndef STABILIZERCPP_STABILIZERGROUP_H
 #define STABILIZERCPP_STABILIZERGROUP_H
 
+#include "gtest/gtest_prod.h"
 #include "SymplecticPauli.h"
 #include <initializer_list>
 #include <unordered_set>
@@ -13,9 +14,11 @@
 typedef std::unordered_set<SymplecticPauli, PauliHash> PauliSet;
 
 class StabilizerGroup {
+private:
     PauliSet generators;
     PauliSet members;
     void generate(const SymplecticPauli& element);
+    FRIEND_TEST(GenratorTest, test_generators_commute);
 public:
     StabilizerGroup();
     StabilizerGroup(std::vector<SymplecticPauli> generators);
