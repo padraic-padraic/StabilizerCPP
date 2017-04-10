@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.7)
+cmake_minimum_required(VERSION 2.8)
 project(StabilizerCPP)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -16,7 +16,7 @@ include_directories( ${CMAKE_SOURCE_DIR}/src/lib )
 include_directories(src)
 add_subdirectory(src)
 add_subdirectory(test)
-include(ctest)
+include(CTest)
 enable_testing()
 
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
