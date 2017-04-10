@@ -11,7 +11,7 @@ addons:
       - libeigen3-dev
 
 before_install:
-  - pip install -user cpp-coveralls
+  - pip install --user cpp-coveralls
 
 script:
   - mkdir build
