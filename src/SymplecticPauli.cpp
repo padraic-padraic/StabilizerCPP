@@ -8,6 +8,8 @@
 #include "lib/SymplecticPauli.h"
 #include "lib/utils.h"
 #include <algorithm>
+#include <functional>
+
 
 using namespace boost;
 
