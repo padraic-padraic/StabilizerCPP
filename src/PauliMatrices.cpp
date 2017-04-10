@@ -8,12 +8,8 @@ Eigen::MatrixXcd kroneckerProduct(Eigen::MatrixXcd& m1, Eigen::MatrixXcd& m2){
     int rows = m1.rows(), cols=m1.cols();
     int bRows = m2.rows(), bCols=m2.cols();
     Eigen::MatrixXcd out(rows*bRows, cols*bCols);
-    std::cout << rows << "\t" << cols << std::endl;
-    std::cout << bRows << "\t" << bCols << std::endl;
-    std::cout << out.rows() << "\t" << out.cols() << std::endl;
     for (int i=0; i<rows; i++){
         for (int j=0; j<cols; j++){
-            std::cout << rows*i << "\t" << cols*j << "\t" << bRows << "\t" << bCols << std::endl;
             out.block(bRows*i,bCols*j, bRows, bCols) = m1(i,j)*m2;
         }
     }

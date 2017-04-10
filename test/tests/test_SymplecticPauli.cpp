@@ -4,6 +4,7 @@
 
 #include "gtest/gtest.h"
 #include "lib/SymplecticPauli.h"
+#include "lib/utils.h"
 #include <string>
 
 class SPUnaryTests : public ::testing::Test {
@@ -12,6 +13,7 @@ protected:
     unsigned int XNUM = 6;
     unsigned int ZNUM = 5;
     unsigned int NUM = 101; // == XNUM*(2^4) + ZNUM;
+    std::string expected = std::to_string(NQUBITS) + std::to_string(XNUM) + std::to_string(ZNUM);
 };
 
 TEST_F(SPUnaryTests, DefaultConstructor){
@@ -40,8 +42,73 @@ TEST_F(SPUnaryTests, OneNumberConstructor){
     EXPECT_EQ(p.ZBits().to_ulong(), ZNUM);
 }
 
+TEST_F(SPUnaryTests, CopyConstructor){
+    SymplecticPauli p(NQUBITS, NUM);
+    SymplecticPauli p2(p);
+    EXPECT_EQ(p.NQubits(),p2.NQubits());
+    EXPECT_EQ(p.toUlong(), p2.toUlong());
+}
+
+TEST_F(SPUnaryTests, UlongForm){
+    SymplecticPauli p(NQUBITS, NUM);
+    ASSERT_EQ(p.toUlong(), NUM);
+}
+
 TEST_F(SPUnaryTests, HashCheck){
     SymplecticPauli p(NQUBITS, NUM);
-    std::string expected = std::to_string(NQUBITS) + std::to_string(XNUM) + std::to_string(ZNUM);
     ASSERT_EQ(std::hash<std::string>{}(expected), PauliHash{}(p));
+}
+
+TEST_F(SPUnaryTests, ToString){
+    SymplecticPauli p(NQUBITS, NUM);
+    std::string test = "IYXZ";
+    std::string out = p.toString();
+    ASSERT_EQ(test, out);
+}
+
+TEST_F(SPUnaryTests, ToMatrix){
+    SymplecticPauli p(2, 2, 3);
+    Eigen::MatrixXcd expected(4,4);
+    expected << 0.,0.,-1.*I,0.,
+                0.,0.,0.,1.*I,
+                1.*I,0.,0.,0.,
+                0.,-1.*I,0.,0.;
+    EXPECT_EQ(p.toMatrix(), expected);
+}
+
+class SPBinaryTests : public ::testing::Test{
+protected:
+    void SetUp() {
+        p1 = SymplecticPauli(4, 6, 5);// == IYXZ
+        p2 = SymplecticPauli(4, 5, 5);// == IYIY
+        p3 = SymplecticPauli(4, 3, 3);// == IIYY
+    }
+    SymplecticPauli p1, p2,p3;
+};
+
+TEST_F(SPBinaryTests, Commutation) {
+    EXPECT_FALSE(p1.commutes(p2));
+    EXPECT_TRUE(p2.commutes(p3));
+    EXPECT_TRUE(p1.commutes(p3));
+}
+
+TEST_F(SPBinaryTests, Equality) {
+    ASSERT_TRUE(p1 == p1);
+    ASSERT_FALSE(p1 != p1);
+    ASSERT_TRUE(p1 != p2);
+    ASSERT_FALSE(p1 == p2);
+}
+
+TEST_F(SPBinaryTests, Ordering) {
+    ASSERT_GT(p1, p2);
+    ASSERT_LT(p2, p1);
+    ASSERT_LT(p3,p2);
+}
+
+TEST_F(SPBinaryTests, Multiply) {
+    SymplecticPauli product(4,3,0);
+    SymplecticPauli product2(p1);
+    product2 *=p2;
+    ASSERT_EQ(product, p1*p2);
+    ASSERT_EQ(product, product2);
 }

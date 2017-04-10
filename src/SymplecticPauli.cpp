@@ -7,6 +7,7 @@
 #include "lib/PauliMatrices.h"
 #include "lib/SymplecticPauli.h"
 #include "lib/utils.h"
+#include <algorithm>
 
 using namespace boost;
 
@@ -59,17 +60,6 @@ SymplecticPauli SymplecticPauli::operator *(const SymplecticPauli &p2) const{
     return p;
 }
 
-inline bool SymplecticPauli::operator<(const SymplecticPauli& p2) {
-    if (this->NQubits() != p2.NQubits()){
-        throw "Cannot compare Paulis on diffrent numbers of qubits.";
-    }
-    return this->toUlong() < p2.toUlong();
-}
-
-inline bool SymplecticPauli::operator>(const SymplecticPauli &p2) {
-    return !((*this).operator<(p2));
-}
-
 bool operator <(const SymplecticPauli& p1, const SymplecticPauli& p2){
     if (p1.NQubits() != p2.NQubits()){
         throw "Cannot compare Paulis on diffrent numbers of qubits.";
@@ -79,14 +69,6 @@ bool operator <(const SymplecticPauli& p1, const SymplecticPauli& p2){
 
 bool operator>(const SymplecticPauli& p1, const SymplecticPauli& p2){
     return !(p1<p2);
-}
-
-inline bool SymplecticPauli::operator==(const SymplecticPauli& p2) {
-    return this->nQubits == p2.nQubits && this->toUlong() == p2.toUlong();
-}
-
-inline bool SymplecticPauli::operator!=(const SymplecticPauli& p2){
-    return !((*this).operator==(p2));
 }
 
 bool operator ==(const SymplecticPauli& p1, const SymplecticPauli& p2){
@@ -134,6 +116,17 @@ bool commutivityTest(std::vector<SymplecticPauli>& paulis){
     return true;
 }
 
+std::string SymplecticPauli::toString() const{
+    std::string out;
+    for(bInt i=0; i<this->NQubits(); i++){
+        if (this->XBits()[i]&this->ZBits()[i]){out= "Y" + out;}
+        else if(this->XBits()[i]&!(this->ZBits()[i])){out= "X" + out;}
+        else if(!(this->XBits()[i])&this->ZBits()[i]){out= "Z" + out;}
+        else {out= "I" + out;}
+    }
+    return out;
+}
+
 Eigen::MatrixXcd SymplecticPauli::toMatrix() const{
     MatrixList paulis;
     for (bInt i=0; i<this->nQubits; i++){
@@ -142,16 +135,13 @@ Eigen::MatrixXcd SymplecticPauli::toMatrix() const{
         else if(!(this->xBits[i])&this->zBits[i]){ paulis.push_back(Z); }
         else {paulis.push_back(Id);}
     }
+    std::reverse(paulis.begin(), paulis.end()); // Required due to definition of the bitarray [] operator, which is least
+                                                // ->most significant and contrary to how we tend to reason about binary numbers.
     return tensor(paulis);
 }
 
 std::ostream& operator<<(std::ostream& os, const SymplecticPauli& p){
-    for(bInt i=0; i<p.NQubits(); i++){
-        if (p.XBits()[i]&p.ZBits()[i]){os << "Y";}
-        else if(p.XBits()[i]&!(p.ZBits()[i])){os << "X";}
-        else if(!(p.XBits()[i])&p.ZBits()[i]){os << "Z";}
-        else {os << "I";}
-    }
+    os << p.toString();
     return os;
 }
 

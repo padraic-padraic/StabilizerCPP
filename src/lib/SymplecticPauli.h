@@ -8,6 +8,7 @@
 #include "boost/dynamic_bitset.hpp"
 #include "Eigen/Dense"
 #include <iostream>
+#include <string>
 #include "PauliMatrices.h"
 
 using namespace boost;
@@ -30,15 +31,11 @@ public:
 
     bool commutes(const SymplecticPauli &p2) const;
 
+    std::string toString() const;
     Eigen::MatrixXcd toMatrix() const;
 
     SymplecticPauli operator *(const SymplecticPauli& p2) const;
     SymplecticPauli& operator *=(const SymplecticPauli& p2);
-
-    inline bool operator ==(const SymplecticPauli& p2);
-    inline bool operator !=(const SymplecticPauli& p2);
-    inline bool operator <(const SymplecticPauli& p2);
-    inline bool operator >(const SymplecticPauli& p2);
 
 private:
     bInt nQubits;
