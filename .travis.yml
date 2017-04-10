@@ -15,7 +15,7 @@ matrix:
             - gcc-4.9
             - g++-4.9
             - libboost-all-dev
-            -libeigen3-dev
+            - libeigen3-dev
       env: COMPILER=g++-4.9
 
 script:
