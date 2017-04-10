@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 MESSAGE(${CMAKE_SOURCE_DIR})
 set(Boost_NO_BOOST_CMAKE TRUE)
-find_package(BOOST REQUIRED)
+find_package(Boost REQUIRED)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
