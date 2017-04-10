@@ -21,7 +21,7 @@ enable_testing()
 
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-set( TEST_FILES test/tests/test_SymplecticPauli.cpp test/tests/test_StabilizerGroup.cpp)
+set( TEST_FILES test/tests/test_SymplecticPauli.cpp test/tests/test_StabilizerGroup.cpp test/tests/TestGroupGeneration.cpp)
 add_executable(aTest ${TEST_FILES})
 target_link_libraries(aTest gtest gtest_main)
 target_link_libraries(aTest symplectic_stabilizer)
@@ -30,4 +30,5 @@ add_test(unit test/tests/aTest)
 
 set(SOURCE_FILES src/main.cpp )
 add_executable(StabilizerCPP ${SOURCE_FILES})
-target_link_libraries(StabilizerCPP symplectic_stabilizer;${Boost_LIBRARIES})
+target_link_libraries(StabilizerCPP gtest gtest_main)
+target_link_libraries(StabilizerCPP symplectic_stabilizer;${Boost_LIBRARIES};)

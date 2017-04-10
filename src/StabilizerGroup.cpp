@@ -77,7 +77,6 @@ std::vector<StabilizerGroup> getStabilizerGroups(unsigned int nQubits){
     for (unsigned int i=1; i<uiPow(2,2*nQubits); i++){
         elements.push_back(SymplecticPauli(nQubits, i));
     }
-    std::cout << "A total of " <<"\t" << elements.size() << std::endl;
     std::vector<bool> mask = getMaskArray(elements.size(), nQubits);
     std::vector<SymplecticPauli> generatorCandidates(nQubits);
     do {
@@ -102,6 +101,5 @@ std::vector<StabilizerGroup> getStabilizerGroups(unsigned int nQubits){
             groups.push_back(candidate);
         }
     } while(std::next_permutation(mask.begin(), mask.end()));
-    std::cout << groups.size() << std::endl;
     return groups;
 }
