@@ -1,14 +1,17 @@
+sudo: required
+dist: precise
+
 language:
   - cpp
 
 addons:
   apt:
-    source:
+    sources:
       - boost-latest
       - ubuntu-toolchain-r-test
     packages:
-      - gcc-4.8
-      - g++-4.8
+      - g++-4.9
+      - gcc-4.9
       - libboost-all-dev
       - libeigen3-dev
 
