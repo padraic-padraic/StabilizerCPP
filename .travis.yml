@@ -4,14 +4,11 @@ language:
 addons:
   apt:
     source:
+      - boost-latest
       - ubuntu-toolchain-r-test
     packages:
-      - cmake
       - libboost-all-dev
       - libeigen3-dev
-
-before_install:
-  - pip install --user cpp-coveralls
 
 script:
   - mkdir build
