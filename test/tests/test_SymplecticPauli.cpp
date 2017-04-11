@@ -18,6 +18,7 @@ protected:
 
 TEST_F(SPUnaryTests, DefaultConstructor){
     SymplecticPauli p;
+    std::cout << p.NQubits() << p.XBits() << p.ZBits() << std::endl;
     EXPECT_EQ(p.NQubits(), 0);
     EXPECT_EQ(p.XBits().size(), 0);
     EXPECT_EQ(p.ZBits().size(), 0);

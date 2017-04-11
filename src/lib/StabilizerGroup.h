@@ -8,6 +8,7 @@
 #include "gtest/gtest_prod.h"
 #include "SymplecticPauli.h"
 #include <initializer_list>
+#include <iostream>
 #include <unordered_set>
 #include <vector>
 
@@ -18,7 +19,7 @@ private:
     PauliSet generators;
     PauliSet members;
     void generate(const SymplecticPauli& element);
-    FRIEND_TEST(GenratorTest, test_generators_commute);
+    FRIEND_TEST(GeneratorTest, test_generators_commute);
 public:
     StabilizerGroup();
     StabilizerGroup(std::vector<SymplecticPauli> generators);
@@ -30,6 +31,7 @@ public:
     bool contains(const SymplecticPauli& p) const;
     bool operator ==(const StabilizerGroup& g2) const;
     bool operator !=(const StabilizerGroup& g2) const;
+    friend std::ostream& operator<<(std::ostream&, const StabilizerGroup&);
 };
 
 std::vector<StabilizerGroup> getStabilizerGroups(unsigned int nQubits);

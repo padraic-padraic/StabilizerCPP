@@ -16,7 +16,7 @@ TEST(GeneratorTest, test_get_generators_3){
     ASSERT_EQ(groups.size(), 135);
 }
 
-TEST(GenratorTest, test_generators_commute){
+TEST(GeneratorTest, test_generators_commute){
     std::vector<StabilizerGroup> groups = getStabilizerGroups(2);
     std::vector<SymplecticPauli> gens(groups[0].nGenerators());
     unsigned int j=0;

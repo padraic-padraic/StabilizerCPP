@@ -103,3 +103,10 @@ std::vector<StabilizerGroup> getStabilizerGroups(unsigned int nQubits){
     } while(std::next_permutation(mask.begin(), mask.end()));
     return groups;
 }
+
+inline std::ostream& operator<<(std::ostream& os, const StabilizerGroup& g){
+    for (auto i=g.generators.begin(); i!=g.generators.end(); i++){
+        os << (*i).toString();
+    }
+    return os;
+}

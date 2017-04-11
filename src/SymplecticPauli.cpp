@@ -8,6 +8,7 @@
 #include "lib/SymplecticPauli.h"
 #include "lib/utils.h"
 #include <algorithm>
+#include <exception>
 #include <functional>
 
 
@@ -47,9 +48,62 @@ SymplecticPauli::SymplecticPauli(const SymplecticPauli& p){
     zBits = dynamic_bitset<>(p.zBits);
 }
 
+void SymplecticPauli::setX(unsigned int num) {
+    if (num > uiPow(2, this->nQubits)){
+        throw std::out_of_range("The X/Z numbers cannot be larger than 2**n_qubits");
+    }
+    boost::dynamic_bitset<> _new(this->nQubits, num);
+    this->xBits.swap(_new);
+    return;
+}
+
+void SymplecticPauli::setZ(unsigned int num){
+    if (num > uiPow(2, this->nQubits)){
+        throw std::out_of_range("The X/Z numbers cannot be larger than 2**n_qubits");
+    }
+    boost::dynamic_bitset<> _new(this->nQubits, num);
+    this->zBits.swap(_new);
+    return;
+}
+
+void SymplecticPauli::setNQubits(unsigned int num) {
+    this->nQubits = num;
+    if (this->xBits.size()!=num){
+        this->xBits.resize(num);
+    }
+    if (this->zBits.size()!=num){
+        this->zBits.resize(num);
+    }
+    return;
+}
+
+void SymplecticPauli::setNum(unsigned int num) {
+    if (num > uiPow(2, 2*this->nQubits)){
+        throw std::out_of_range("The ulong form cannot be larger than 2**(2*n_qubits)");
+    }
+    unsigned int bnum, base=uiPow(2, this->nQubits);
+    bnum = num % base;
+    dynamic_bitset<> _newz(this->nQubits, bnum);
+    this->zBits.swap(_newz);
+    num >>= this->nQubits;
+    bnum = num % base;
+    dynamic_bitset<> _newx(this->nQubits, bnum);
+    this->xBits.swap(_newx);
+}
+
+bool SymplecticPauli::isNull() const{
+    if (this->nQubits==0 || this->xBits.size()==0 || this->zBits.size()==0){
+        return true;
+    }
+    return false;
+}
+
 SymplecticPauli& SymplecticPauli::operator *=(const SymplecticPauli &p2) {
+    if (this->isNull() || p2.isNull()){
+        throw std::invalid_argument("One of the Pauli operators has nor been properly initialized");
+    }
     if (this->nQubits!=p2.nQubits){
-        throw "Pauli operators must act on the same number of qubits.";
+        throw std::length_error("Cannot perform operations between Pauli Matrices on different numbers of qubits");
     }
     this->xBits = this->xBits^p2.xBits;
     this->zBits = this->zBits^p2.zBits;
@@ -64,7 +118,7 @@ SymplecticPauli SymplecticPauli::operator *(const SymplecticPauli &p2) const{
 
 bool operator <(const SymplecticPauli& p1, const SymplecticPauli& p2){
     if (p1.NQubits() != p2.NQubits()){
-        throw "Cannot compare Paulis on diffrent numbers of qubits.";
+        throw std::length_error("Cannot perform operations between Pauli Matrices on different numbers of qubits");
     }
     return p1.toUlong() < p2.toUlong();
 }
@@ -102,7 +156,7 @@ unsigned long SymplecticPauli::toUlong() const {
 
 bool SymplecticPauli::commutes(const SymplecticPauli &p2) const {
     if (this->nQubits != p2.nQubits){
-        throw "Cannot test commutivity of operators on different number of qubits";
+        throw std::length_error("Cannot perform operations between Pauli Matrices on different numbers of qubits");
     }
     unsigned long total = ((this->xBits&p2.zBits).count() +
                          (this->zBits&p2.xBits).count());
@@ -120,6 +174,9 @@ bool commutivityTest(std::vector<SymplecticPauli>& paulis){
 
 std::string SymplecticPauli::toString() const{
     std::string out;
+    if (this->isNull()){
+        out = "";
+    }
     for(bInt i=0; i<this->NQubits(); i++){
         if (this->XBits()[i]&this->ZBits()[i]){out= "Y" + out;}
         else if(this->XBits()[i]&!(this->ZBits()[i])){out= "X" + out;}
@@ -130,6 +187,11 @@ std::string SymplecticPauli::toString() const{
 }
 
 Eigen::MatrixXcd SymplecticPauli::toMatrix() const{
+    if (this->isNull()){
+        Eigen::MatrixXcd out(1,1);
+        out(1,1) = 0.;
+        return out;
+    }
     MatrixList paulis;
     for (bInt i=0; i<this->nQubits; i++){
         if (this->xBits[i]&this->zBits[i]){ paulis.push_back(Y);}

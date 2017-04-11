@@ -26,6 +26,10 @@ public:
     unsigned int NQubits() const;
     dynamic_bitset<> XBits() const;
     dynamic_bitset<> ZBits() const;
+    void setNQubits(unsigned int num);
+    void setX(unsigned int  num);
+    void setZ(unsigned int num);
+    void setNum(unsigned int num);
 
     unsigned long toUlong() const;
 
@@ -41,6 +45,7 @@ private:
     bInt nQubits;
     dynamic_bitset<> xBits;
     dynamic_bitset<> zBits;
+    bool isNull() const;
 };
 
 bool commutivityTest(std::vector<SymplecticPauli>&);
