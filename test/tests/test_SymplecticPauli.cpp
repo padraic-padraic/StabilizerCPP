@@ -67,6 +67,14 @@ TEST_F(SPUnaryTests, Setters){
     ASSERT_EQ(p2.toUlong(), NUM);
 }
 
+TEST_F(SPUnaryTests, Exceptions){
+    SymplecticPauli p(NQUBITS, NUM), p2(3,1,0);
+    ASSERT_THROW(p*p2, std::length_error);
+    ASSERT_THROW(p.commutes(p2), std::length_error);
+    SymplecticPauli p3;
+    ASSERT_THROW(p*p3, std::invalid_argument);
+}
+
 TEST_F(SPUnaryTests, UlongForm){
     SymplecticPauli p(NQUBITS, NUM);
     ASSERT_EQ(p.toUlong(), NUM);
