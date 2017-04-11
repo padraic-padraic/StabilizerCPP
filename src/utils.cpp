@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include "lib/SymplecticPauli.h"
+#include "lib/StabilizerGroup.h"
 #include "lib/utils.h"
 
 unsigned int uiPow(unsigned int base, unsigned int exp) {
@@ -31,3 +32,5 @@ std::vector<bool> getMaskArray(size_t n, unsigned int r){
     std::fill(mask.end()-r, mask.end(), true);
     return mask;
 }
+
+

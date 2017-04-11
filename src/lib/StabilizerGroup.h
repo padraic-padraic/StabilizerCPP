@@ -20,6 +20,7 @@ private:
     PauliSet members;
     void generate(const SymplecticPauli& element);
     FRIEND_TEST(GeneratorTest, test_generators_commute);
+    FRIEND_TEST(GeneratorTest, test_loaded_generators);
 public:
     StabilizerGroup();
     StabilizerGroup(std::vector<SymplecticPauli> generators);
@@ -35,5 +36,8 @@ public:
 };
 
 std::vector<StabilizerGroup> getStabilizerGroups(unsigned int nQubits);
+
+StabilizerGroup loadGroup(std::ifstream& is);
+std::vector<StabilizerGroup> groupsFromFile(std::string& filePath);
 
 #endif //STABILIZERCPP_STABILIZERGROUP_H

@@ -110,3 +110,35 @@ inline std::ostream& operator<<(std::ostream& os, const StabilizerGroup& g){
     }
     return os;
 }
+
+StabilizerGroup loadGroup(std::ifstream& is){
+    std::string line;
+    StabilizerGroup g;
+    SymplecticPauli p;
+    std::getline(is, line);
+    do {
+        if(!(line.empty())) {
+            p = SymplecticPauli(line);
+            g.add(p);
+        }
+        std::getline(is, line);
+    } while(line != "ENDGROUP");
+    return g;
+}
+
+std::vector<StabilizerGroup> groupsFromFile(std::string& filePath){
+    std::ifstream is(filePath);
+    if (!(is.good())){
+        throw std::invalid_argument("This path, " +filePath + " is NO GOOD.");
+    }
+    std::string line;
+    std::vector<StabilizerGroup> groups;
+    while(std::getline(is, line)){
+        if (line=="GROUP"){
+            groups.push_back(loadGroup(is)); //Winds forward until an ENDGROUP block is found
+        }
+        continue; //Winds forward until the next GROUP block is found
+    }
+    is.close();
+    return groups;
+}

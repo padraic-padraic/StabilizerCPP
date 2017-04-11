@@ -6,8 +6,8 @@
 #define STABILIZERCPP_UTILS_H
 
 #include <complex>
+#include <fstream>
 #include <vector>
-#include "SymplecticPauli.h"
 
 typedef std::complex<double> cd;
 

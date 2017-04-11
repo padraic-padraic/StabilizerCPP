@@ -3,6 +3,7 @@
 //
 
 #include "boost/dynamic_bitset.hpp"
+#include "boost/exception/to_string.hpp"
 #include "Eigen/Dense"
 #include "lib/PauliMatrices.h"
 #include "lib/SymplecticPauli.h"
@@ -234,8 +235,8 @@ std::ostream& operator<<(std::ostream& os, const SymplecticPauli& p){
 }
 
 size_t PauliHash::operator()(const SymplecticPauli &p) const{
-    std::string temp = std::to_string(p.NQubits()) +
-                       std::to_string(p.XBits().to_ulong())+
-                       std::to_string(p.ZBits().to_ulong());
-    return std::hash<std::string>{}(temp);
+    std::string temp = boost::to_string(p.NQubits()) +
+                       boost::to_string(p.XBits().to_ulong())+
+                       boost::to_string(p.ZBits().to_ulong());
+    return std::hash<std::string>()(temp);
 }
