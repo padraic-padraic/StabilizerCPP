@@ -12,17 +12,31 @@ matrix:
             - ubuntu-toolchain-r-test
             - boost-latest
           packages:
-            - gcc-4.9
-            - g++-4.9
+            - gcc-5
+            - g++-5
             - libboost1.55-all-dev
             - libeigen3-dev
-      env: COMPILER=g++-4.9
+      env:
+        - CXX=g++-5
+        - CC=gcc-5
+#      - compiler: clang
+#        addons:
+#          apt:
+#            sources:
+#              - ubuntu-toolchain-r-test
+#              - boost-latest
+#            packages:
+#              - clang-3.7
+#              - libboost1.55-all-dev
+#              - libeigen3-dev
+#              - llvm-toolchain-precise-3.7
+#        env: COMPILER=clang++-3.7
 
 
 script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_CXX_COMPILER=$COMPILER ..
+  - cmake ..
   - make
   - ./tests
 
