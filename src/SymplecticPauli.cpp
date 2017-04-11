@@ -48,6 +48,30 @@ SymplecticPauli::SymplecticPauli(const SymplecticPauli& p){
     zBits = dynamic_bitset<>(p.zBits);
 }
 
+SymplecticPauli::SymplecticPauli(std::string pauliLiterals) {
+    nQubits = pauliLiterals.length();
+    xBits = boost::dynamic_bitset<> (nQubits);
+    zBits = boost::dynamic_bitset<> (nQubits);
+    bInt counter = 0;
+    for (auto c=pauliLiterals.crbegin(); c!=pauliLiterals.crend(); c++){
+        switch (*c) {
+            case 'I':
+                xBits[counter]=0; zBits[counter]=0;
+                break;
+            case 'X':
+                xBits[counter]=1; zBits[counter]=0;
+                break;
+            case 'Y':
+                xBits[counter]=1; zBits[counter]=1;
+                break;
+            case 'Z':
+                xBits[counter]=0; zBits[counter]=1;
+                break;
+        }
+        counter++;
+    }
+}
+
 void SymplecticPauli::setX(unsigned int num) {
     if (num > uiPow(2, this->nQubits)){
         throw std::out_of_range("The X/Z numbers cannot be larger than 2**n_qubits");

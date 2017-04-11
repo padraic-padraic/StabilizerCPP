@@ -22,6 +22,7 @@ public:
     SymplecticPauli(unsigned int NQubits, unsigned int xNum, unsigned int zNum);
     SymplecticPauli(unsigned int NQubits, unsigned int Num);
     SymplecticPauli(const SymplecticPauli& p_copy);
+    SymplecticPauli(std::string pauliLiterals);
 
     unsigned int NQubits() const;
     dynamic_bitset<> XBits() const;

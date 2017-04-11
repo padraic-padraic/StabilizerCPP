@@ -50,6 +50,14 @@ TEST_F(SPUnaryTests, CopyConstructor){
     EXPECT_EQ(p.toUlong(), p2.toUlong());
 }
 
+TEST_F(SPUnaryTests, StringConstructor){
+    SymplecticPauli expected(NQUBITS, NUM);
+    SymplecticPauli p("IYXZ");
+    ASSERT_EQ(p.NQubits(), expected.NQubits());
+    ASSERT_EQ(p.XBits().to_ulong(), expected.XBits().to_ulong());
+    ASSERT_EQ(p.ZBits().to_ulong(), expected.ZBits().to_ulong());
+}
+
 TEST_F(SPUnaryTests, Setters){
     SymplecticPauli p;
     p.setNQubits(NQUBITS);

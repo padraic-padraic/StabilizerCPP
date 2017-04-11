@@ -10,7 +10,7 @@
 #include "Eigen/StdVector"
 #include "utils.h"
 
-typedef std::vector<Eigen::MatrixXcd,Eigen::aligned_allocator<Eigen::MatrixXcd>> MatrixList;
+typedef std::vector<Eigen::MatrixXcd, Eigen::aligned_allocator<Eigen::MatrixXcd> > MatrixList;
 
 Eigen::MatrixXcd kroneckerProduct(Eigen::MatrixXcd& m1, Eigen::MatrixXcd& m2);
 Eigen::MatrixXcd kroneckerProduct(const Eigen::MatrixXcd& m1, const Eigen::MatrixXcd& m2);
