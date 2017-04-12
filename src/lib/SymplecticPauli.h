@@ -31,6 +31,9 @@ public:
     void setX(unsigned int  num);
     void setZ(unsigned int num);
     void setNum(unsigned int num);
+    unsigned int firstXY() const;
+    unsigned int firstZ() const;
+    bool isIdentity() const;
 
     unsigned long toUlong() const;
 

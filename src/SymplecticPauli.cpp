@@ -125,7 +125,7 @@ bool SymplecticPauli::isNull() const{
 
 SymplecticPauli& SymplecticPauli::operator *=(const SymplecticPauli &p2) {
     if (this->isNull() || p2.isNull()){
-        throw std::invalid_argument("One of the Pauli operators has nor been properly initialized");
+        throw std::invalid_argument("One of the Pauli operators has not been properly initialized");
     }
     if (this->nQubits!=p2.nQubits){
         throw std::length_error("Cannot perform operations between Pauli Matrices on different numbers of qubits");
@@ -177,6 +177,37 @@ unsigned long SymplecticPauli::toUlong() const {
     out <<= this->NQubits();
     out += this->zBits.to_ulong();
     return out;
+}
+
+unsigned int SymplecticPauli::firstXY() const {
+    bInt index = this->xBits.size() -1;
+    unsigned int counter = 0;
+    for (; index >0; index--){
+        if(this->xBits[index]){
+            return counter;
+        }
+        counter++;
+    }
+    return this->NQubits()-1;
+}
+
+unsigned int SymplecticPauli::firstZ() const {
+    bInt index = this->zBits.size() -1;
+    unsigned int counter=0;
+    for(; index>0; index--){
+        if(this->zBits[index]){
+            return counter;
+        }
+        counter++;
+    }
+    return this->NQubits()-1;
+}
+
+bool SymplecticPauli::isIdentity() const {
+    if (this->xBits.to_ulong()!=0 || this->zBits.to_ulong()!=0){
+        return true;
+    }
+    return false;
 }
 
 bool SymplecticPauli::commutes(const SymplecticPauli &p2) const {
