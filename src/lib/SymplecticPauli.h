@@ -25,14 +25,14 @@ public:
     SymplecticPauli(std::string pauliLiterals);
 
     unsigned int NQubits() const;
-    dynamic_bitset<> XBits() const;
-    dynamic_bitset<> ZBits() const;
+    const dynamic_bitset<>& XBits() const;
+    const dynamic_bitset<>& ZBits() const;
     void setNQubits(unsigned int num);
-    void setX(unsigned int  num);
+    void setX(unsigned int num);
     void setZ(unsigned int num);
     void setNum(unsigned int num);
-    unsigned int firstXY() const;
-    unsigned int firstZ() const;
+    bool isXY(bInt index) const;
+    bool isZY(bInt index) const;
     bool isIdentity() const;
 
     unsigned long toUlong() const;

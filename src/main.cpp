@@ -2,6 +2,7 @@
 #include <iostream>
 #include "lib/SymplecticPauli.h"
 #include "lib/StabilizerGroup.h"
+#include "lib/StabilizerMatrix.h"
 
 int main(int argc, char *argv[]) {
     //Comment out as this wasn't building but the tests will run!

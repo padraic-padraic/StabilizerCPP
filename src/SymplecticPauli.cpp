@@ -145,7 +145,7 @@ bool operator <(const SymplecticPauli& p1, const SymplecticPauli& p2){
     if (p1.NQubits() != p2.NQubits()){
         throw std::length_error("Cannot perform operations between Pauli Matrices on different numbers of qubits");
     }
-    return p1.toUlong() < p2.toUlong();
+    return (p1.toUlong() < p2.toUlong());
 }
 
 bool operator>(const SymplecticPauli& p1, const SymplecticPauli& p2){
@@ -153,7 +153,7 @@ bool operator>(const SymplecticPauli& p1, const SymplecticPauli& p2){
 }
 
 bool operator ==(const SymplecticPauli& p1, const SymplecticPauli& p2){
-    return p1.NQubits() == p2.NQubits() && p1.toUlong() == p2.toUlong();
+    return (p1.NQubits() == p2.NQubits()) && (p1.toUlong() == p2.toUlong());
 }
 
 bool operator !=(const SymplecticPauli& p1, const SymplecticPauli& p2){
@@ -161,15 +161,15 @@ bool operator !=(const SymplecticPauli& p1, const SymplecticPauli& p2){
 }
 
 unsigned int SymplecticPauli::NQubits() const{
-    return static_cast<unsigned int>(this->nQubits);
+    return this->nQubits;
 }
 
-dynamic_bitset<> SymplecticPauli::XBits() const {
+const dynamic_bitset<>& SymplecticPauli::XBits() const {
     return this->xBits;
 }
 
-dynamic_bitset<> SymplecticPauli::ZBits() const {
-    return  this->zBits;
+const dynamic_bitset<>& SymplecticPauli::ZBits() const {
+    return this->zBits;
 }
 
 unsigned long SymplecticPauli::toUlong() const {
@@ -179,35 +179,21 @@ unsigned long SymplecticPauli::toUlong() const {
     return out;
 }
 
-unsigned int SymplecticPauli::firstXY() const {
-    bInt index = this->xBits.size() -1;
-    unsigned int counter = 0;
-    for (; index >0; index--){
-        if(this->xBits[index]){
-            return counter;
-        }
-        counter++;
-    }
-    return this->NQubits()-1;
+bool SymplecticPauli::isXY(bInt index) const {
+    return (this->xBits[index]==1);
 }
 
-unsigned int SymplecticPauli::firstZ() const {
-    bInt index = this->zBits.size() -1;
-    unsigned int counter=0;
-    for(; index>0; index--){
-        if(this->zBits[index]){
-            return counter;
-        }
-        counter++;
-    }
-    return this->NQubits()-1;
+bool SymplecticPauli::isZY(bInt index) const {
+    return (this->zBits[index]==1);
 }
 
 bool SymplecticPauli::isIdentity() const {
-    if (this->xBits.to_ulong()!=0 || this->zBits.to_ulong()!=0){
-        return true;
+    for(bInt index=0; index<this->xBits.size(); index++){
+        if ((this->xBits[index]!=0)||(this->zBits[index]!=0)){
+            return false;
+        }
     }
-    return false;
+    return true;
 }
 
 bool SymplecticPauli::commutes(const SymplecticPauli &p2) const {
@@ -234,9 +220,9 @@ std::string SymplecticPauli::toString() const{
         out = "";
     }
     for(bInt i=0; i<this->NQubits(); i++){
-        if (this->XBits()[i]&this->ZBits()[i]){out= "Y" + out;}
-        else if(this->XBits()[i]&!(this->ZBits()[i])){out= "X" + out;}
-        else if(!(this->XBits()[i])&this->ZBits()[i]){out= "Z" + out;}
+        if (this->xBits[i]&this->zBits[i]){out= "Y" + out;}
+        else if(this->xBits[i]&!(this->zBits[i])){out= "X" + out;}
+        else if(!(this->xBits[i])&this->zBits[i]){out= "Z" + out;}
         else {out= "I" + out;}
     }
     return out;

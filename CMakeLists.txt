@@ -21,7 +21,7 @@ enable_testing()
 
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-set( TEST_FILES test/tests/test_SymplecticPauli.cpp test/tests/test_StabilizerGroup.cpp test/tests/test_GroupGeneration.cpp)
+set( TEST_FILES test/tests/test_SymplecticPauli.cpp test/tests/test_GroupGeneration.cpp test/tests/test_StabilizerMatrix.cpp)
 add_executable(do_tests ${TEST_FILES})
 target_link_libraries(do_tests gtest gtest_main)
 target_link_libraries(do_tests symplectic_stabilizer)

@@ -19,8 +19,6 @@ private:
     PauliSet generators;
     PauliSet members;
     void generate(const SymplecticPauli& element);
-    FRIEND_TEST(GeneratorTest, test_generators_commute);
-    FRIEND_TEST(GeneratorTest, test_loaded_generators);
 public:
     StabilizerGroup();
     StabilizerGroup(std::vector<SymplecticPauli> generators);

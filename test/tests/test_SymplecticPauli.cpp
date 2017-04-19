@@ -110,6 +110,17 @@ TEST_F(SPUnaryTests, ToMatrix){
     EXPECT_EQ(p.toMatrix(), expected);
 }
 
+TEST_F(SPUnaryTests, LiteralTests){
+    SymplecticPauli p(4,6,5); //IYXZ
+    ASSERT_TRUE(p.isZY(0));
+    ASSERT_TRUE(p.isXY(1));
+    ASSERT_TRUE(p.isXY(2));
+    ASSERT_FALSE(p.isZY(1));
+    ASSERT_FALSE(p.isXY(0));
+    ASSERT_TRUE(p.isXY(2)&&p.isZY(2));
+    ASSERT_FALSE(p.isXY(3)&&p.isZY(3));
+}
+
 class SPBinaryTests : public ::testing::Test{
 protected:
     void SetUp() {
