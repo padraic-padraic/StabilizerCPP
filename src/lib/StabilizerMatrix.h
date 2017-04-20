@@ -7,14 +7,17 @@
 
 #include <initializer_list>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include "gtest/gtest_prod.h"
 #include "Eigen/Dense"
+#include "Eigen/Eigenvalues"
 #include "Eigen/StdVector"
 #include "SymplecticPauli.h"
 
 
 typedef std::vector<SymplecticPauli>::size_type SMIndex;
+typedef std::vector<Eigen::VectorXcd, Eigen::aligned_allocator<Eigen::VectorXcd> > VectorList;
 
 class StabilizerMatrix {
 private:
@@ -38,6 +41,7 @@ public:
     const unsigned int& NQubits() const;
     const std::vector<SymplecticPauli>& Generators() const;
     Eigen::MatrixXcd projector() const;
+    Eigen::VectorXcd stabilizerState() const;
 };
 
 bool operator==(const StabilizerMatrix& m1, const StabilizerMatrix& m2);
@@ -48,5 +52,7 @@ std::ostream& operator<<(std::ostream& os, const StabilizerMatrix&m);
 std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits);
 StabilizerMatrix loadGroup(std::ifstream& is);
 std::vector<StabilizerMatrix> groupsFromFile(std::string& filePath);
+void writeState(std::ofstream& os, Eigen::VectorXcd& state);
+void saveStates(std::string& filePath, std::vector<StabilizerMatrix>& groups);
 
 #endif //STABILIZERCPP_STABILIZERMATRIX_H

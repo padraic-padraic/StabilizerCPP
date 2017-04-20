@@ -210,3 +210,51 @@ Eigen::MatrixXcd StabilizerMatrix::projector() const{
     }
     return out;
 }
+
+Eigen::VectorXcd StabilizerMatrix::stabilizerState() const{
+    unsigned int dim = uiPow(2, this->nQubits);
+    Eigen::VectorXd::Index i;
+    Eigen::MatrixXcd projector(dim, dim);
+    Eigen::VectorXcd state(dim);
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXcd> eigenSystem;
+    projector = this->projector();
+    eigenSystem.compute(projector);
+    eigenSystem.eigenvalues().maxCoeff(&i);
+    state = eigenSystem.eigenvalues().col(i);
+    return state;
+}
+
+void writeState(std::ofstream& os, Eigen::VectorXcd& state){
+    os << "STATE" << std::endl;
+    os << state << std::endl;
+    os << "ENDSTATE" << std::endl;
+}
+
+void saveStates(std::string& filePath, std::vector<StabilizerMatrix>& groups){
+    std::ofstream os(filePath);
+    for(auto i=groups.cbegin(); i!=groups.cend(); i++){
+        saveStates(os, *i);
+        os << std::endl;
+    }
+}
+
+Eigen::VectorXcd loadState(std::ifstream is){
+    cd placeholder;
+    std::vector<cd> coeffs;
+    std::string line;
+    std::istringstream iss;
+    std::getline(is, line);
+    do {
+        if(!(line.empty())) {
+            iss = std::istringstream(line);
+            iss >> placeholder;
+            coeffs.push_back(placeholder);
+        }
+        std::getline(is, line);
+    } while(line != "ENDGROUP");
+    Eigen::VectorXcd v(coeffs.size());
+    for(auto i=0; i<coeffs.size(); i++){
+        v(i)=coeffs[i];
+    }
+    return v;
+}
