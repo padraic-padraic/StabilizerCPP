@@ -9,6 +9,8 @@
 #include <iostream>
 #include <vector>
 #include "gtest/gtest_prod.h"
+#include "Eigen/Dense"
+#include "Eigen/StdVector"
 #include "SymplecticPauli.h"
 
 
@@ -35,6 +37,7 @@ public:
     bool linearlyIndependent() const;
     const unsigned int& NQubits() const;
     const std::vector<SymplecticPauli>& Generators() const;
+    Eigen::MatrixXcd projector() const;
 };
 
 bool operator==(const StabilizerMatrix& m1, const StabilizerMatrix& m2);
@@ -43,6 +46,7 @@ bool operator!=(const StabilizerMatrix& m1, const StabilizerMatrix& m2);
 std::ostream& operator<<(std::ostream& os, const StabilizerMatrix&m);
 
 std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits);
-
+StabilizerMatrix loadGroup(std::ifstream& is);
+std::vector<StabilizerMatrix> groupsFromFile(std::string& filePath);
 
 #endif //STABILIZERCPP_STABILIZERMATRIX_H

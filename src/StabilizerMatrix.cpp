@@ -156,3 +156,57 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits){
     } while(std::next_permutation(mask.begin(), mask.end()));
     return groups;
 }
+
+StabilizerMatrix loadGroup(std::ifstream& is){
+    std::string line;
+    std::vector<SymplecticPauli> ps;
+    std::getline(is, line);
+    do {
+        if(!(line.empty())) {
+            ps.push_back(SymplecticPauli(line));
+        }
+        std::getline(is, line);
+    } while(line != "ENDGROUP");
+    StabilizerMatrix g(ps);
+    return g;
+}
+
+std::vector<StabilizerMatrix> groupsFromFile(std::string& filePath){
+    std::ifstream is(filePath);
+    if (!(is.good())){
+        throw std::invalid_argument("This path, " +filePath + " is NO GOOD.");
+    }
+    std::string line;
+    std::vector<StabilizerMatrix> groups;
+    while(std::getline(is, line)){
+        if (line=="GROUP"){
+            groups.push_back(loadGroup(is)); //Winds forward until an ENDGROUP block is found
+        }
+        continue; //Winds forward until the next GROUP block is found
+    }
+    is.close();
+    return groups;
+}
+
+void groupsToFile(std::string& filePath, std::vector<StabilizerMatrix> groups){
+    std::ofstream os(filePath);
+    if (!(os.good())){
+        throw std::invalid_argument("Couldn't open path "+ filePath + " for output.");
+    }
+    for(auto i=groups.cbegin(); i!=groups.cend(); i++){
+        os << *i << std::endl;
+    }
+}
+
+Eigen::MatrixXcd StabilizerMatrix::projector() const{
+    unsigned int dim = uiPow(2, this->nQubits);
+    Eigen::MatrixXcd out(dim,dim), _identity(dim,dim), pauli(dim,dim);
+    _identity = identity(dim);
+    out = identity(dim);
+    for(auto i=this->generators.cbegin(); i!=this->generators.cend(); i++){
+        pauli = (*i).toMatrix();
+        out = out *(_identity+pauli);
+        out = 0.5 * out;
+    }
+    return out;
+}
