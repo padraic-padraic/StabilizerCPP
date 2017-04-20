@@ -54,5 +54,6 @@ StabilizerMatrix loadGroup(std::ifstream& is);
 std::vector<StabilizerMatrix> groupsFromFile(std::string& filePath);
 void writeState(std::ofstream& os, Eigen::VectorXcd& state);
 void saveStates(std::string& filePath, std::vector<StabilizerMatrix>& groups);
-
+Eigen::VectorXcd loadState(std::ifstream is);
+VectorList statesFromFile(std::string filePath);
 #endif //STABILIZERCPP_STABILIZERMATRIX_H

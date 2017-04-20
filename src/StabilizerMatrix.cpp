@@ -232,8 +232,10 @@ void writeState(std::ofstream& os, Eigen::VectorXcd& state){
 
 void saveStates(std::string& filePath, std::vector<StabilizerMatrix>& groups){
     std::ofstream os(filePath);
+    Eigen::VectorXcd state(uiPow(2, groups[0].NQubits()));
     for(auto i=groups.cbegin(); i!=groups.cend(); i++){
-        saveStates(os, *i);
+        state = i->projector();
+        writeState(os, state);
         os << std::endl;
     }
 }
@@ -251,10 +253,27 @@ Eigen::VectorXcd loadState(std::ifstream is){
             coeffs.push_back(placeholder);
         }
         std::getline(is, line);
-    } while(line != "ENDGROUP");
+    } while(line != "ENDSTATE");
     Eigen::VectorXcd v(coeffs.size());
     for(auto i=0; i<coeffs.size(); i++){
         v(i)=coeffs[i];
     }
     return v;
+}
+
+VectorList statesFromFile(std::string filePath){
+    std::ifstream is(filePath);
+    if (!(is.good())){
+        throw std::invalid_argument("This path, " +filePath + " is NO GOOD.");
+    }
+    std::string line;
+    VectorList states;
+    while(std::getline(is, line)){
+        if (line=="STATE"){
+            states.push_back(loadState(is)); //Winds forward until an ENDSTATE block is found
+        }
+        continue; //Winds forward until the next STATE block is found
+    }
+    is.close();
+    return states;
 }
