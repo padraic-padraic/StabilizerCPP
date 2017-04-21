@@ -87,7 +87,8 @@ TEST(GeneratorTest, test_save_and_load_state){
     Eigen::VectorXcd::Index i;
     for(VectorList::size_type j=0; j<states.size(); j++){
         for(i=0; i<states[j].rows(); i++){
-            ASSERT_EQ(states[j](i), foundStates[j](i));
+            ASSERT_DOUBLE_EQ(states[j](i).real(), foundStates[j](i).real());
+            ASSERT_DOUBLE_EQ(states[j](i).imag(), foundStates[j](i).imag());
         }
     }
 }

@@ -19,6 +19,8 @@ unsigned int factorial(unsigned int n);
 
 unsigned int nCr(unsigned int n, unsigned int r);
 
+unsigned int nStabilizers(unsigned int nQubits);
+
 std::vector<bool> getMaskArray(size_t n, unsigned int r);
 
 #endif //STABILIZERCPP_UTILS_H

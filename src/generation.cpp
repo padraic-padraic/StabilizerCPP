@@ -2,9 +2,10 @@
 // Created by Padraic Calpin on 21/04/2017.
 //
 
-#include "generation.h"
+#include "lib/generation.h"
+#include "lib/utils.h"
 
-std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits){
+std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nGroups){
     unsigned int generatorIndex = 0;
     std::vector<StabilizerMatrix> groups;
     std::vector<SymplecticPauli> elements;
@@ -39,9 +40,13 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits){
     return groups;
 }
 
-VectorList getStabilizerStates(unsigned int nqubits){
+std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits){
+    return getStabilizerGroups(nQubits, nStabilizers(nQubits));
+}
+
+VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates){
     std::vector<StabilizerMatrix> groups;
-    groups = getStabilizerGroups(nqubits);
+    groups = getStabilizerGroups(nQubits, nStates);
     Eigen::VectorXcd placeholder;
     VectorList states;
     for (auto i=groups.cbegin(); i!=groups.cend(); i++){
@@ -49,6 +54,10 @@ VectorList getStabilizerStates(unsigned int nqubits){
         states.push_back(placeholder);
     }
     return states;
+}
+
+VectorList getStabilizerStates(unsigned int nQubits){
+    return getStabilizerStates(nQubits, nStabilizers(nQubits));
 }
 
 StabilizerMatrix loadGroup(std::ifstream& is){

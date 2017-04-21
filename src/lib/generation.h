@@ -16,7 +16,9 @@
 typedef std::vector<Eigen::VectorXcd, Eigen::aligned_allocator<Eigen::VectorXcd> > VectorList;
 
 std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits);
+std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nGroups);
 VectorList getStabilizerStates(unsigned int nqubits);
+VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates);
 StabilizerMatrix loadGroup(std::ifstream& is);
 std::vector<StabilizerMatrix> groupsFromFile(std::string& filePath);
 void saveGroups(std::string& filePath, std::vector<StabilizerMatrix> groups);
