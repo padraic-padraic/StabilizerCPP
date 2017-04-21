@@ -1,9 +1,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <typeinfo>
-#include "lib/SymplecticPauli.h"
-#include "lib/StabilizerMatrix.h"
-#include "lib/generation.h"
+
 
 int main(int argc, char *argv[]) {
     //Comment out as this wasn't building but the tests will run!
