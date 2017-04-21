@@ -17,7 +17,6 @@
 
 
 typedef std::vector<SymplecticPauli>::size_type SMIndex;
-typedef std::vector<Eigen::VectorXcd, Eigen::aligned_allocator<Eigen::VectorXcd> > VectorList;
 
 class StabilizerMatrix {
 private:
@@ -49,11 +48,5 @@ bool operator!=(const StabilizerMatrix& m1, const StabilizerMatrix& m2);
 
 std::ostream& operator<<(std::ostream& os, const StabilizerMatrix&m);
 
-std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits);
-StabilizerMatrix loadGroup(std::ifstream& is);
-std::vector<StabilizerMatrix> groupsFromFile(std::string& filePath);
-void writeState(std::ofstream& os, Eigen::VectorXcd& state);
-void saveStates(std::string& filePath, std::vector<StabilizerMatrix>& groups);
-Eigen::VectorXcd loadState(std::ifstream is);
-VectorList statesFromFile(std::string filePath);
+
 #endif //STABILIZERCPP_STABILIZERMATRIX_H

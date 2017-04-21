@@ -5,7 +5,7 @@
 #include "gtest/gtest.h"
 #include "lib/SymplecticPauli.h"
 #include "lib/StabilizerMatrix.h"
-#include <fstream>
+#include "lib/generation.h"
 
 TEST(GeneratorTest, test_get_generators_2){
     std::vector<StabilizerMatrix> groups = getStabilizerGroups(2);
@@ -31,27 +31,63 @@ TEST(GeneratorTest, test_generators_commute){
     }
 }
 
-//TEST(GeneratorTest, test_file_reading){
-//    std::vector<StabilizerGroup> groups;
-//    std::string path = "../test/tests/fixtures/2qtest.generators";
-//    groups = groupsFromFile(path);
-//    std::cout << groups.size() << std::endl;
-//    ASSERT_EQ(groups.size(), 3);
-//    for (auto i = groups.begin(); i!=groups.end(); i++){
-//        ASSERT_EQ((*i).nGenerators(), 2);
-//        ASSERT_EQ((*i).order(), 4);
-//    }
-//    path = "someJunk";
-//    ASSERT_THROW(groupsFromFile(path), std::invalid_argument);
-//}
-//
-//TEST(GeneratorTest, test_loaded_generators){
-//    std::string path = "../test/tests/fixtures/single_test.generators";
-//    std::vector<StabilizerGroup> groups;
-//    groups = groupsFromFile(path);
-//    ASSERT_EQ(groups.size(), 1);
-//    ASSERT_TRUE(groups[0].contains(SymplecticPauli("IX")));
-//    ASSERT_TRUE(groups[0].contains(SymplecticPauli("ZI")));
-//    ASSERT_TRUE(groups[0].contains(SymplecticPauli("ZX")));
-//    ASSERT_TRUE(groups[0].contains(SymplecticPauli("II")));
-//}
+TEST(GeneratorTest, test_file_reading){
+    std::vector<StabilizerMatrix> groups;
+    std::string path = "../test/tests/fixtures/2qtest.generators";
+    groups = groupsFromFile(path);
+    std::cout << groups.size() << std::endl;
+    ASSERT_EQ(groups.size(), 3);
+    for (auto i = groups.begin(); i!=groups.end(); i++){
+
+    }
+    path = "someJunk";
+    ASSERT_THROW(groupsFromFile(path), std::invalid_argument);
+}
+
+TEST(GeneratorTest, test_loaded_generators) {
+    std::string path = "../test/tests/fixtures/single_test.generators";
+    std::vector<StabilizerMatrix> groups;
+    groups = groupsFromFile(path);
+    ASSERT_EQ(groups.size(), 2);
+    ASSERT_TRUE(groups[0].linearlyIndependent());
+    ASSERT_FALSE(groups[1].linearlyIndependent());
+}
+
+TEST(GeneratorTest, test_save_and_load) {
+    std::string path="../test/tests/fixtures/full_save_load.generators";
+    std::vector<StabilizerMatrix> groups;
+    groups = getStabilizerGroups(2);
+    saveGroups(path, groups);
+    std::vector<StabilizerMatrix> foundGroups;
+    foundGroups = groupsFromFile(path);
+    for (std::vector<StabilizerMatrix>::size_type i=0; i!=groups.size(); i++){
+        ASSERT_EQ(groups[i], foundGroups[i]);
+    }
+}
+
+TEST(GeneratorTest, test_state){
+    Eigen::VectorXcd fixture(4);
+    fixture << 1.,0.,0.,0.;
+    StabilizerMatrix group({SymplecticPauli("IZ"), SymplecticPauli("ZI")});
+    group.toCanonicalForm();
+    Eigen::VectorXcd out (4);
+    out = group.stabilizerState();
+    for(Eigen::VectorXcd::Index i=0; i<fixture.rows(); i++){
+        ASSERT_EQ(fixture(i), out(i));
+    }
+}
+
+TEST(GeneratorTest, test_save_and_load_state){
+    std::string path="../test/tests/fixtures/full_save_load.states";
+    VectorList states;
+    states = getStabilizerStates(2);
+    saveStates(path, states);
+    VectorList foundStates;
+    foundStates = statesFromFile(path);
+    Eigen::VectorXcd::Index i;
+    for(VectorList::size_type j=0; j<states.size(); j++){
+        for(i=0; i<states[j].rows(); i++){
+            ASSERT_EQ(states[j](i), foundStates[j](i));
+        }
+    }
+}
