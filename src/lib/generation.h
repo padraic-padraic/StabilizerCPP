@@ -11,7 +11,7 @@
 #include "Eigen/Dense"
 #include "Eigen/Eigenvalues"
 #include "Eigen/StdVector"
-#include "lib/StabilizerMatrix.h"
+#include "StabilizerMatrix.h"
 
 typedef std::vector<Eigen::VectorXcd, Eigen::aligned_allocator<Eigen::VectorXcd> > VectorList;
 
