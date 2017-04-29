@@ -4,6 +4,12 @@
 
 #include "gtest/gtest.h"
 #include "lib/SymplecticPauli.h"
+
+
+#define TEST_FRIENDS \
+    friend class GeneratorTest_test_generators_commute_Test; \
+    friend class GeneratorTest_test_loaded_generators_Test;
+
 #include "lib/StabilizerMatrix.h"
 #include "lib/generation.h"
 

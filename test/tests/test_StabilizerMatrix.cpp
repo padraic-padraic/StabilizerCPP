@@ -4,6 +4,11 @@
 
 #include "gtest/gtest.h"
 #include "lib/SymplecticPauli.h"
+
+#define TEST_FRIENDS \
+    friend class SMTest_RowSwap_Test; \
+    friend class SMTest_RowMult_Test;
+
 #include "lib/StabilizerMatrix.h"
 
 class SMTest : public ::testing::Test{

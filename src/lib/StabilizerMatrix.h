@@ -9,12 +9,14 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "gtest/gtest_prod.h"
 #include "Eigen/Dense"
 #include "Eigen/Eigenvalues"
 #include "Eigen/StdVector"
 #include "SymplecticPauli.h"
 
+#ifndef TEST_FRIENDS
+#define TEST_FRIENDS
+#endif
 
 typedef std::vector<SymplecticPauli>::size_type SMIndex;
 
@@ -24,10 +26,7 @@ private:
     std::vector<SymplecticPauli> generators;
     void rowSwap(SMIndex i, SMIndex j);
     void rowMult(SMIndex i, SMIndex j);
-    FRIEND_TEST(GeneratorTest, test_generators_commute);
-    FRIEND_TEST(GeneratorTest, test_loaded_generators);
-    FRIEND_TEST(SMTest, RowSwap);
-    FRIEND_TEST(SMTest, RowMult);
+    TEST_FRIENDS;
 public:
     StabilizerMatrix();
     StabilizerMatrix(unsigned int NQubits);
