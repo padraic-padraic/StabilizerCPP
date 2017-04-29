@@ -13,6 +13,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out)
 set(CACHE BUILD_SHARED_LIBS OFF STRING "Turn on to build a dynamic library, or off for static.")
 option(BUILD_SUPERBUILD "Build StabilizerCPP and all dependencies" OFF)
 option(BUILD_TESTING "Build the unit tests." ON)
+option(BUILD_EXECUTEABLE "Build StabilizerCPP Executable" ON)
 
 ###
 
@@ -59,7 +60,8 @@ if(BUILD_TESTING)
     add_test(unit do_tests)
 endif()
 
-
-set(SOURCE_FILES src/main.cpp )
-add_executable(StabilizerCPP ${SOURCE_FILES})
-target_link_libraries(StabilizerCPP ${Boost_LIBRARIES} symplectic_stabilizer )
+if(BUILD_EXECUTEABLE)
+    set(SOURCE_FILES src/main.cpp )
+    add_executable(StabilizerCPP ${SOURCE_FILES})
+    target_link_libraries(StabilizerCPP ${Boost_LIBRARIES} symplectic_stabilizer )
+endif()
