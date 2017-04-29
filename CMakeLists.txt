@@ -44,10 +44,10 @@ endif()
 ###
 
 ### Setup Project###
-add_subdirectory(test)
 add_subdirectory(src)
 ###
 if(BUILD_TESTING)
+    add_subdirectory(test)
     include(CTest)
     enable_testing()
     include_directories( ${CMAKE_SOURCE_DIR}/src)

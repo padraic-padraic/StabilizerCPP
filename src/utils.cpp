@@ -4,7 +4,6 @@
 
 #include <algorithm>
 #include "lib/SymplecticPauli.h"
-#include "lib/StabilizerGroup.h"
 #include "lib/utils.h"
 
 unsigned int uiPow(unsigned int base, unsigned int exp) {

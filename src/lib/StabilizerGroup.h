@@ -5,7 +5,6 @@
 #ifndef STABILIZERCPP_STABILIZERGROUP_H
 #define STABILIZERCPP_STABILIZERGROUP_H
 
-#include "gtest/gtest_prod.h"
 #include "SymplecticPauli.h"
 #include <initializer_list>
 #include <iostream>
