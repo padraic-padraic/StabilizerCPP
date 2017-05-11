@@ -14,6 +14,7 @@ set(CACHE BUILD_SHARED_LIBS OFF STRING "Turn on to build a dynamic library, or o
 option(BUILD_SUPERBUILD "Build StabilizerCPP and all dependencies" OFF)
 option(BUILD_TESTING "Build the unit tests." ON)
 option(BUILD_EXECUTABLE "Build StabilizerCPP Executable" ON)
+option(BUILD_PYTHON "Build within the stabilizer_search package" OFF)
 
 ###
 
@@ -24,15 +25,22 @@ if(BUILD_SUPERBUILD)
 else()
     project(StabilizerCPP)
     ### Settings for finding BOOST#
-    set(Boost_NO_BOOST_CMAKE TRUE)
-    find_package(Boost REQUIRED)
-    if(Boost_FOUND)
-        include_directories(${Boost_INCLUDE_DIRS})
+    if(BUILD_PYTHON)
+        message(${CMAKE_SOURCE_DIR}/../eigen/)
+        message(${CMAKE_SOURCE_DIR}/../dynamic_bitset/include/)
+        include_directories(${CMAKE_SOURCE_DIR}/../eigen/)
+        include_directories(${CMAKE_SOURCE_DIR}/../dynamic_bitset/include/)
+    else()
+        set(Boost_NO_BOOST_CMAKE TRUE)
+        find_package(Boost REQUIRED)
+        if(Boost_FOUND)
+            include_directories(${Boost_INCLUDE_DIRS})
+        endif()
+        ###
+        ###Settings for finding EIGEN
+        find_package(Eigen3 REQUIRED)
+        include_directories(${EIGEN3_INCLUDE_DIR})
     endif()
-    ###
-    ###Settings for finding EIGEN
-    find_package(Eigen3 REQUIRED)
-    include_directories(${EIGEN3_INCLUDE_DIR})
     ###
 endif()
 
