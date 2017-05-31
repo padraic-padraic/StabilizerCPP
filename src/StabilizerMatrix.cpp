@@ -112,13 +112,20 @@ bool operator!=(const StabilizerMatrix& m1, const StabilizerMatrix& m2){
     return !(m1==m2);
 }
 
-std::ostream& operator<<(std::ostream& os, const StabilizerMatrix& m){
-    os << "GROUP" << std::endl;
-    for(auto i=m.Generators().cbegin(); i!=m.Generators().cend(); i++){
-        os << (*i) << std::endl;
+std::string StabilizerMatrix::toString() const{
+    std::string out;
+    out = "GROUP\n";
+    for(auto i = this->generators.cbegin(); i!=this->generators.cend(); i++){
+        out += (*i).toString();
+        out += "\n";
     }
-    os << "ENDGROUP"<< std::endl;
-    os << "\n\n";
+    out += "ENDGROUP\n\n";
+    return out;
+}
+
+
+std::ostream& operator<<(std::ostream& os, const StabilizerMatrix& m){
+    os << m.toString();
     return os;
 }
 

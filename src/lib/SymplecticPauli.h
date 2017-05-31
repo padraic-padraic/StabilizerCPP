@@ -27,6 +27,8 @@ public:
     unsigned int NQubits() const;
     const dynamic_bitset<>& XBits() const;
     const dynamic_bitset<>& ZBits() const;
+    const unsigned int X() const;
+    const unsigned int Z() const;
     void setNQubits(unsigned int num);
     void setX(unsigned int num);
     void setZ(unsigned int num);

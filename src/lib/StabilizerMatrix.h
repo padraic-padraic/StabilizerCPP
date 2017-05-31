@@ -8,6 +8,7 @@
 #include <initializer_list>
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <vector>
 #include "Eigen/Dense"
 #include "Eigen/Eigenvalues"
@@ -40,6 +41,7 @@ public:
     const std::vector<SymplecticPauli>& Generators() const;
     Eigen::MatrixXcd projector() const;
     Eigen::VectorXcd stabilizerState() const;
+    std::string toString() const;
 };
 
 bool operator==(const StabilizerMatrix& m1, const StabilizerMatrix& m2);

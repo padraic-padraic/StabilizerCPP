@@ -172,6 +172,14 @@ const dynamic_bitset<>& SymplecticPauli::ZBits() const {
     return this->zBits;
 }
 
+const unsigned int SymplecticPauli::X() const {
+    return dynamic_cast<unsigned int> (this->xBits.to_ulong());
+}
+
+const unsigned int SymplecticPauli::Z() const {
+    return dynamic_cast<unsigned int> (this->zBits.to_ulong());
+}
+
 unsigned long SymplecticPauli::toUlong() const {
     unsigned long out= this->xBits.to_ulong();
     out <<= this->NQubits();
