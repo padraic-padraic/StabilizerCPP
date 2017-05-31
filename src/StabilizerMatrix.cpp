@@ -12,16 +12,19 @@
 StabilizerMatrix::StabilizerMatrix() {
     nQubits=0;
     generators = std::vector<SymplecticPauli>();
+    phase = 0;
 }
 
 StabilizerMatrix::StabilizerMatrix(unsigned int NQubits) {
     nQubits = NQubits;
     generators = std::vector<SymplecticPauli>(nQubits);
+    phase = 0;
 }
 
 StabilizerMatrix::StabilizerMatrix(std::vector<SymplecticPauli> paulis) {
     nQubits = static_cast<unsigned int>(paulis.size());
     generators = std::vector<SymplecticPauli>(paulis);
+    phase = 0;
 }
 
 StabilizerMatrix::StabilizerMatrix(std::initializer_list<SymplecticPauli> paulis) {
@@ -30,6 +33,7 @@ StabilizerMatrix::StabilizerMatrix(std::initializer_list<SymplecticPauli> paulis
     for(auto i=paulis.begin(); i!=paulis.end(); i++){
         generators.push_back(*i);
     }
+    phase = 0;
 }
 
 StabilizerMatrix::StabilizerMatrix(unsigned int NQubits, std::vector<SymplecticPauli> paulis) {
@@ -39,6 +43,18 @@ StabilizerMatrix::StabilizerMatrix(unsigned int NQubits, std::vector<SymplecticP
     }
     nQubits = NQubits;
     generators = std::vector<SymplecticPauli>(paulis);
+    phase = 0;
+}
+
+StabilizerMatrix::StabilizerMatrix(std::vector<unsigned int> pauliNums){
+    nQubits = pauliNums.size();
+    SymplecticPauli placeholder;
+    generators = std::vector<SymplecticPauli>();
+    for (auto i=pauliNums.cbegin(); i!= pauliNums.cend(); i++){
+        placeholder.setNum(*i);
+        generators.push_back(placeholder);
+    }
+    phase = 0;
 }
 
 const unsigned int& StabilizerMatrix::NQubits() const {
@@ -59,16 +75,17 @@ void StabilizerMatrix::rowMult(SMIndex i, SMIndex j){
 
 void StabilizerMatrix::toCanonicalForm() {
     unsigned int i=0;
-    for (unsigned int j =0; j<this->nQubits; j++){
-        for(unsigned int k=i; k<this->nQubits; k++){
-            if (this->generators[k].isXY(j)){
+    for (unsigned int j =0; j<this->nQubits; j++) {
+        for (unsigned int k = i; k < this->nQubits; k++) {
+            if (this->generators[k].isXY(j)) {
                 this->rowSwap(i, k);
-                for (unsigned int m=0; m<this->nQubits; m++){
-                    if ((m!=i)&&(this->generators[m].isXY(j))){
+                for (unsigned int m = 0; m < this->nQubits; m++) {
+                    if ((m != i) && (this->generators[m].isXY(j))) {
                         this->rowMult(i, m);
                     }
                 }
                 i++;
+                break;
             } else {
                 continue;
             }
@@ -76,7 +93,7 @@ void StabilizerMatrix::toCanonicalForm() {
     }
     for (unsigned int j=0; j<this->nQubits; j++){
         for (unsigned int k=i; k<this->nQubits; k++){
-            if (this->generators[k].isZY(j)){
+            if (this->generators[k].isZ(j)){
                 this->rowSwap(i, k);
                 for(unsigned int m=0; m<this->nQubits; m++){
                     if((m!=i)&&(this->generators[m].isZY(j))) {
@@ -84,6 +101,7 @@ void StabilizerMatrix::toCanonicalForm() {
                     }
                 }
                 i++;
+                break;
             } else {
                 continue;
             }
@@ -91,6 +109,10 @@ void StabilizerMatrix::toCanonicalForm() {
     }
 //    std::sort(this->generators.begin(), this->generators.end());
     return;
+}
+
+void StabilizerMatrix::setPhase(unsigned int p) {
+    this->phase = p;
 }
 
 bool StabilizerMatrix::linearlyIndependent() const {
@@ -130,13 +152,18 @@ std::ostream& operator<<(std::ostream& os, const StabilizerMatrix& m){
 }
 
 Eigen::MatrixXcd StabilizerMatrix::projector() const{
+    dynamic_bitset<> phasebits(this->nQubits, this->phase);
     unsigned int dim = uiPow(2, this->nQubits);
     Eigen::MatrixXcd out(dim,dim), _identity(dim,dim), pauli(dim,dim);
     _identity = identity(dim);
     out = identity(dim);
-    for(auto i=this->generators.cbegin(); i!=this->generators.cend(); i++){
-        pauli = (*i).toMatrix();
-        out = out *(_identity+pauli);
+    for(unsigned int i=0; i<this->generators.size(); i++){
+        pauli = (this->generators[i]).toMatrix();
+        if (phasebits[i] ==1){
+            out = out *(_identity - pauli);
+        } else {
+            out = out * (_identity + pauli);
+        }
         out = 0.5 * out;
     }
     return out;

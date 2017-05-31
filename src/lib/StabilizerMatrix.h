@@ -24,6 +24,7 @@ typedef std::vector<SymplecticPauli>::size_type SMIndex;
 class StabilizerMatrix {
 private:
     unsigned int nQubits;
+    unsigned int phase;
     std::vector<SymplecticPauli> generators;
     void rowSwap(SMIndex i, SMIndex j);
     void rowMult(SMIndex i, SMIndex j);
@@ -34,8 +35,10 @@ public:
     StabilizerMatrix(std::vector<SymplecticPauli> paulis);
     StabilizerMatrix(std::initializer_list<SymplecticPauli> paulis);
     StabilizerMatrix(unsigned int NQubits, std::vector<SymplecticPauli> paulis);
+    StabilizerMatrix(std::vector<unsigned int> pauliNums);
 //    StabilizerMatrix(StabilizerMatrix& m);
     void toCanonicalForm();
+    void setPhase(unsigned int p);
     bool linearlyIndependent() const;
     const unsigned int& NQubits() const;
     const std::vector<SymplecticPauli>& Generators() const;

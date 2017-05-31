@@ -195,6 +195,10 @@ bool SymplecticPauli::isZY(bInt index) const {
     return (this->zBits[index]==1);
 }
 
+bool SymplecticPauli::isZ(bInt index) const {
+    return (this->zBits[index]==1&&this->xBits[index]==0);
+}
+
 bool SymplecticPauli::isIdentity() const {
     for(bInt index=0; index<this->xBits.size(); index++){
         if ((this->xBits[index]!=0)||(this->zBits[index]!=0)){

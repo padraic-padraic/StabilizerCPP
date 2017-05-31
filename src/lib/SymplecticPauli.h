@@ -35,6 +35,7 @@ public:
     void setNum(unsigned int num);
     bool isXY(bInt index) const;
     bool isZY(bInt index) const;
+    bool isZ(bInt index) const;
     bool isIdentity() const;
 
     unsigned long toUlong() const;
