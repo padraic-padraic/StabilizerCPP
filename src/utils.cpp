@@ -40,4 +40,3 @@ std::vector<bool> getMaskArray(size_t n, unsigned int r){
     return mask;
 }
 
-

@@ -2,10 +2,19 @@
 // Created by Padraic Calpin on 21/04/2017.
 //
 
+#include <functional>
+#include <random>
 #include "lib/generation.h"
 #include "lib/utils.h"
 
 std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nGroups){
+    unsigned int target;
+    if (nGroups > nStabilizers(nQubits)/uiPow(2,nQubits)){
+        target = nStabilizers(nQubits)/uiPow(2,nQubits);
+    }
+    else {
+        target = nGroups;
+    }
     unsigned int generatorIndex = 0;
     std::vector<StabilizerMatrix> groups;
     std::vector<SymplecticPauli> elements;
@@ -36,6 +45,9 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
         if (std::none_of(groups.begin(), groups.end(), [&candidate](StabilizerMatrix& g){return candidate==g;})){
             groups.push_back(candidate);
         }
+        if (groups.size()==target){
+            break;
+        }
     } while(std::next_permutation(mask.begin(), mask.end()));
     return groups;
 }
@@ -45,13 +57,50 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits){
 }
 
 VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates){
+    unsigned int nStabs, nPos;
+    nStabs = nStabilizers(nQubits);
+    nPos = nStabs/uiPow(2, nQubits);
     std::vector<StabilizerMatrix> groups;
     groups = getStabilizerGroups(nQubits, nStates);
     Eigen::VectorXcd placeholder;
     VectorList states;
-    for (auto i=groups.cbegin(); i!=groups.cend(); i++){
-        placeholder = i->stabilizerState();
-        states.push_back(placeholder);
+    std::mt19937::result_type seed = time(0);
+    auto rand_phase = std::bind(std::uniform_int_distribution<unsigned int>(1,uiPow(2,nQubits)),
+                                std::mt19937(seed));
+    if (nStates < nPos){
+        auto rand_real = std::bind(std::uniform_real_distribution<double>(0,1),
+                                   std::mt19937(seed));
+        for (auto i=groups.begin(); i!=groups.end(); i++){
+            if (rand_real() > 0.5){
+                i->setPhase(rand_phase());
+            }
+            placeholder = i->stabilizerState();
+            states.push_back(placeholder);
+        }
+    }
+    else if (nStates > nPos && nStates < nStabs){
+        auto rand_group = std::bind(std::uniform_int_distribution<unsigned int>(1,groups.size()),
+                                    std::mt19937(seed));
+        unsigned int gIndex;
+        for (auto i=groups.cbegin(); i!=groups.cend(); i++){
+            placeholder = i->stabilizerState();
+            states.push_back(placeholder);
+        }
+        for (unsigned int i=0; i< (nStates-nPos); i++){
+            gIndex = rand_group();
+            groups[gIndex].setPhase(rand_phase());
+            placeholder = groups[gIndex].stabilizerState();
+            states.push_back(placeholder);
+        }
+    }
+    else {
+        for (unsigned int i=0; i<(uiPow(2,nQubits)+1); i++){
+            for (auto i = groups.begin(); i!=groups.end(); i++){
+                i->setPhase(i);
+                placeholder = i->stabilizerState();
+                states.push_back(placeholder);
+            }
+        }
     }
     return states;
 }
