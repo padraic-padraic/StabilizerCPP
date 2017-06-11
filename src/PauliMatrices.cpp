@@ -36,6 +36,14 @@ Eigen::MatrixXcd tensor(MatrixList& matrices){
     return out;
 }
 
+Eigen::MatrixXcd tensor(PauliList& matrices){
+    Eigen::MatrixXcd out = matrices[0];
+    for(auto it = (matrices.begin()+1); it!=matrices.end(); it++){
+        out = kroneckerProduct(out, *it);
+    }
+    return out;
+}
+
 
 Eigen::MatrixXcd identity(unsigned int dim){
     Eigen::MatrixXcd out(dim, dim);
