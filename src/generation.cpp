@@ -95,9 +95,9 @@ VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates){
     }
     else {
         for (unsigned int i=0; i<(uiPow(2,nQubits)+1); i++){
-            for (auto i = groups.begin(); i!=groups.end(); i++){
-                i->setPhase(i);
-                placeholder = i->stabilizerState();
+            for (auto g = groups.begin(); g!=groups.end(); g++){
+                g->setPhase(i);
+                placeholder = g->stabilizerState();
                 states.push_back(placeholder);
             }
         }

@@ -2,18 +2,17 @@
 // Created by Padraic Calpin on 24/03/2017.
 //
 
+#include <complex>
 #include "boost/dynamic_bitset.hpp"
 #include "boost/exception/to_string.hpp"
 #include "Eigen/Dense"
+#include "Eigen/StdVector"
 #include "lib/PauliMatrices.h"
 #include "lib/SymplecticPauli.h"
-#include "lib/utils.h"
-#include <algorithm>
-#include <exception>
-#include <functional>
 
 
 using namespace boost;
+
 
 SymplecticPauli::SymplecticPauli(){
     nQubits = 0;
@@ -172,12 +171,14 @@ const dynamic_bitset<>& SymplecticPauli::ZBits() const {
     return this->zBits;
 }
 
-const unsigned int SymplecticPauli::X() const {
-    return this->xBits.to_ulong();
+const unsigned int SymplecticPauli::XNum() const {
+    unsigned int the_num =  this->xBits.to_ulong();
+    return the_num;
 }
 
-const unsigned int SymplecticPauli::Z() const {
-    return this->zBits.to_ulong();
+const unsigned int SymplecticPauli::ZNum() const {
+    unsigned int the_num = this->zBits.to_ulong();
+    return the_num;
 }
 
 unsigned long SymplecticPauli::toUlong() const {
@@ -246,7 +247,7 @@ Eigen::MatrixXcd SymplecticPauli::toMatrix() const{
         out(1,1) = 0.;
         return out;
     }
-    MatrixList paulis;
+    std::vector<Eigen::MatrixXcd, Eigen::aligned_allocator<Eigen::MatrixXcd>> paulis;
     for (bInt i=0; i<this->nQubits; i++){
         if (this->xBits[i]&this->zBits[i]){ paulis.push_back(Y);}
         else if(this->xBits[i]&!(this->zBits[i])){ paulis.push_back(X); }

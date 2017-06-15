@@ -28,15 +28,7 @@ Eigen::MatrixXcd kroneckerProduct(const Eigen::MatrixXcd& m1, const Eigen::Matri
     return out;
 }
 
-Eigen::MatrixXcd tensor(MatrixList& matrices){
-    Eigen::MatrixXcd out = matrices[0];
-    for(auto it = (matrices.begin()+1); it!=matrices.end(); it++){
-        out = kroneckerProduct(out, *it);
-    }
-    return out;
-}
-
-Eigen::MatrixXcd tensor(PauliList& matrices){
+Eigen::MatrixXcd tensor(std::vector<Eigen::Matrix2cd, Eigen::aligned_allocator<Eigen::Matrix2cd>>& matrices){
     Eigen::MatrixXcd out = matrices[0];
     for(auto it = (matrices.begin()+1); it!=matrices.end(); it++){
         out = kroneckerProduct(out, *it);
