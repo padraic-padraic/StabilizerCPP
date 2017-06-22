@@ -12,11 +12,11 @@
 
 std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nStates, bool realOnly){
     unsigned int target;
-    if (nGroups > nStabilizers(nQubits)/uiPow(2,nQubits)){
+    if (nStates > nStabilizers(nQubits)/uiPow(2,nQubits)){
         target = nStabilizers(nQubits)/uiPow(2,nQubits);
     }
     else {
-        target = nGroups;
+        target = nStates;
     }
     unsigned int generatorIndex = 0;
     std::vector<StabilizerMatrix> groups;
