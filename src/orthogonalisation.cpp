@@ -20,5 +20,6 @@ Eigen::MatrixXcd orthoProjector(VectorList& states){
         cols.col(i) = states[i];
     }
     Eigen::HouseholderQR<Eigen::MatrixXcd> orthogonatron(cols);
-    return orthogonatron.householderQ();
+    Eigen::MatrixXcd q = orthogonatron.householderQ();
+    return q*q.adjoint();
 }
