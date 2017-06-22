@@ -209,6 +209,14 @@ bool SymplecticPauli::isIdentity() const {
     return true;
 }
 
+bool SymplecticPauli::isReal() const {
+    bool real = 1;
+    for (bInt counter =0; counter < this->xBits.size(); counter++){
+        real ^= (this->xBits[counter]&this->zBits[counter]);
+    }
+    return real;
+}
+
 bool SymplecticPauli::commutes(const SymplecticPauli &p2) const {
     if (this->nQubits != p2.nQubits){
         throw std::length_error("Cannot perform operations between Pauli Matrices on different numbers of qubits");

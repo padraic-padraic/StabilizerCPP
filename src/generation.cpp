@@ -2,12 +2,15 @@
 // Created by Padraic Calpin on 21/04/2017.
 //
 
+#include <algorithm>
 #include <functional>
 #include <random>
 #include "lib/generation.h"
 #include "lib/utils.h"
 
-std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nGroups){
+
+
+std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nGroups, bool realOnly){
     unsigned int target;
     if (nGroups > nStabilizers(nQubits)/uiPow(2,nQubits)){
         target = nStabilizers(nQubits)/uiPow(2,nQubits);
@@ -17,17 +20,18 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
     }
     unsigned int generatorIndex = 0;
     std::vector<StabilizerMatrix> groups;
-    std::vector<SymplecticPauli> elements;
+    std::vector<SymplecticPauli> paulis;
     for (unsigned int i=1; i<uiPow(2,2*nQubits); i++){
-        elements.push_back(SymplecticPauli(nQubits, i));
+        paulis.push_back(SymplecticPauli(nQubits, i));
     }
-    std::vector<bool> mask = getMaskArray(elements.size(), nQubits);
+    std::random_shuffle(paulis.begin(), paulis.end());
+    std::vector<bool> mask = getMaskArray(paulis.size(), nQubits);
     std::vector<SymplecticPauli> generatorCandidates(nQubits);
     do {
         StabilizerMatrix candidate;
         for(std::vector<bool>::size_type i=0; i<mask.size(); i++){
             if (mask[i]){
-                generatorCandidates[generatorIndex] = elements[i];
+                generatorCandidates[generatorIndex] = paulis[i];
                 generatorIndex++;
             }
         }
@@ -52,16 +56,15 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
     return groups;
 }
 
-std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits){
-    return getStabilizerGroups(nQubits, nStabilizers(nQubits));
+std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, bool realOnly){
+    return getStabilizerGroups(nQubits, nStabilizers(nQubits), realOnly);
 }
 
-VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates){
+VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned int nStates){
+    unsigned int nQubits = groups[0].NQubits();
     unsigned int nStabs, nPos;
     nStabs = nStabilizers(nQubits);
     nPos = nStabs/uiPow(2, nQubits);
-    std::vector<StabilizerMatrix> groups;
-    groups = getStabilizerGroups(nQubits, nStates);
     Eigen::VectorXcd placeholder;
     VectorList states;
     std::mt19937::result_type seed = time(0);
@@ -105,8 +108,13 @@ VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates){
     return states;
 }
 
-VectorList getStabilizerStates(unsigned int nQubits){
-    return getStabilizerStates(nQubits, nStabilizers(nQubits));
+VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates, bool realOnly){
+    std::vector<StabilizerMatrix> groups = getStabilizerGroups(nQubits, nStates, realOnly);
+    return getStabilizerStates(groups, nStates);
+}
+
+VectorList getStabilizerStates(unsigned int nQubits, bool realOnly){
+    return getStabilizerStates(nQubits, nStabilizers(nQubits), realOnly);
 }
 
 StabilizerMatrix loadGroup(std::ifstream& is){

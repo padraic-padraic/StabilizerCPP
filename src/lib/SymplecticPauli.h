@@ -37,6 +37,7 @@ public:
     bool isZY(bInt index) const;
     bool isZ(bInt index) const;
     bool isIdentity() const;
+    bool isReal() const;
 
     unsigned long toUlong() const;
 

@@ -40,6 +40,7 @@ public:
     void toCanonicalForm();
     void setPhase(unsigned int p);
     bool linearlyIndependent() const;
+    bool isReal() const;
     const unsigned int& NQubits() const;
     const std::vector<SymplecticPauli>& Generators() const;
     Eigen::MatrixXcd projector() const;
