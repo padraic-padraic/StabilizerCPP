@@ -16,7 +16,7 @@
 typedef std::vector<Eigen::VectorXcd, Eigen::aligned_allocator<Eigen::VectorXcd> > VectorList;
 
 std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, bool realOnly=false);
-std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nGroups, bool realOnly=false);
+std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nStates, bool realOnly=false);
 VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned int nStates);
 VectorList getStabilizerStates(unsigned int nqubits, bool realOnly=false);
 VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates, bool realOnly=false);

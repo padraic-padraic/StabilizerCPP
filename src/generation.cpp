@@ -10,7 +10,7 @@
 
 
 
-std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nGroups, bool realOnly){
+std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nStates, bool realOnly){
     unsigned int target;
     if (nGroups > nStabilizers(nQubits)/uiPow(2,nQubits)){
         target = nStabilizers(nQubits)/uiPow(2,nQubits);
