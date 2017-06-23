@@ -3,14 +3,14 @@ MESSAGE("${CMAKE_CXX_COMPILER_ID}")
 ### C++ Settings ###
 set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_EXTENSIONS  0) Required by gtest
-set(CMKE_CXX_STANDARD_REQUIRED 1)
+set(CMAKE_CXX_STANDARD_REQUIRED 11)
 ###
 
 ###Setup CMAKE Options###
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/out)
-set(CACHE BUILD_SHARED_LIBS OFF STRING "Turn on to build a dynamic library, or off for static.")
+set(CACHE BUILD_SHARED_LIBS ON STRING "Turn on to build a dynamic library, or off for static.")
 option(BUILD_SUPERBUILD "Build StabilizerCPP and all dependencies" OFF)
 option(BUILD_TESTING "Build the unit tests." ON)
 option(BUILD_EXECUTABLE "Build StabilizerCPP Executable" ON)
