@@ -1,7 +1,7 @@
 project(symplectic_stabilizer)
 
 include_directories( ${CMAKE_SOURCE_DIR}/src/lib )
-set(LIB_FILES SymplecticPauli.cpp utils.cpp PauliMatrices.cpp StabilizerMatrix.cpp generation.cpp orthogonalisation.cpp)
+set(LIB_FILES utils.cpp PauliMatrices.cpp SymplecticPauli.cpp StabilizerMatrix.cpp generation.cpp orthogonalisation.cpp)
 add_library(symplectic_stabilizer ${LIB_FILES})
 if(NOT BUILD_SHARED_LIBS)
     set_target_properties(symplectic_stabilizer PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})

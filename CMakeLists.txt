@@ -4,6 +4,7 @@ MESSAGE("${CMAKE_CXX_COMPILER_ID}")
 set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_EXTENSIONS  0) Required by gtest
 set(CMAKE_CXX_STANDARD_REQUIRED 11)
+cmake_policy(SET CMP0042 NEW)
 ###
 
 ###Setup CMAKE Options###
