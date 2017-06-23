@@ -36,6 +36,14 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
             }
         }
         generatorIndex = 0;
+        if (realOnly){
+            if (std::all_of(generatorCandidates.begin(), generatorCandidates.end(), [](SymplecticPauli& p){
+                    return p.isReal();
+                }) == false)
+            {
+                continue;
+            }
+        }
         if (!commutivityTest(generatorCandidates)){ continue; }
         candidate = StabilizerMatrix(generatorCandidates);
         candidate.toCanonicalForm();
@@ -70,7 +78,7 @@ VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned in
     std::mt19937::result_type seed = time(0);
     auto rand_phase = std::bind(std::uniform_int_distribution<unsigned int>(1,uiPow(2,nQubits)),
                                 std::mt19937(seed));
-    if (nStates < nPos){
+    if (nStates <= nPos){
         auto rand_real = std::bind(std::uniform_real_distribution<double>(0,1),
                                    std::mt19937(seed));
         for (auto i=groups.begin(); i!=groups.end(); i++){
@@ -82,22 +90,19 @@ VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned in
         }
     }
     else if (nStates > nPos && nStates < nStabs){
-        auto rand_group = std::bind(std::uniform_int_distribution<unsigned int>(1,groups.size()),
-                                    std::mt19937(seed));
         unsigned int gIndex;
         for (auto i=groups.cbegin(); i!=groups.cend(); i++){
             placeholder = i->stabilizerState();
             states.push_back(placeholder);
         }
         for (unsigned int i=0; i< (nStates-nPos); i++){
-            gIndex = rand_group();
-            groups[gIndex].setPhase(rand_phase());
-            placeholder = groups[gIndex].stabilizerState();
+            groups[i].setPhase(rand_phase()); //Uhh what about duplicates? Groups shuffle anyway so...
+            placeholder = groups[i].stabilizerState();
             states.push_back(placeholder);
         }
     }
     else {
-        for (unsigned int i=0; i<(uiPow(2,nQubits)+1); i++){
+        for (unsigned int i=1; i<(uiPow(2,nQubits)+1); i++){
             for (auto g = groups.begin(); g!=groups.end(); g++){
                 g->setPhase(i);
                 placeholder = g->stabilizerState();

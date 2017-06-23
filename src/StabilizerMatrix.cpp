@@ -116,13 +116,13 @@ void StabilizerMatrix::setPhase(unsigned int p) {
 }
 
 bool StabilizerMatrix::linearlyIndependent() const {
-    return std::none_of(this->generators.cbegin(), this->generators.cend(), [](const SymplecticPauli p) {
+    return std::none_of(this->generators.cbegin(), this->generators.cend(), [](const SymplecticPauli& p) {
         return p.isIdentity();
     });
 }
 
 bool StabilizerMatrix::isReal() const {
-    return std::all_of(this->generators.cbegin(), this->generators.cend(), [](const SymplecticPauli p){
+    return std::all_of(this->generators.cbegin(), this->generators.cend(), [](const SymplecticPauli& p){
         return p.isReal();
     });
 }
