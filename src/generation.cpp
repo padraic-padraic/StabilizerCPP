@@ -62,6 +62,9 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
         }
         if (std::none_of(groups.begin(), groups.end(), [&candidate](StabilizerMatrix& g){return candidate==g;})){
             groups.push_back(candidate);
+            if (verbose){
+                std::cout << "Found " + std::to_string(groups.size()) + " groups so far." << std::endl;
+            }
         }
         if (groups.size()==target){
             break;
