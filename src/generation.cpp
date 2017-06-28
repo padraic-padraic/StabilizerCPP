@@ -4,13 +4,16 @@
 
 #include <algorithm>
 #include <functional>
+#include <iostream>
 #include <random>
+#include <string>
 #include "lib/generation.h"
 #include "lib/utils.h"
 
 
 
-std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nStates, bool realOnly){
+std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nStates, bool realOnly,
+                                                  bool verbose){
     unsigned int target;
     if (nStates > nStabilizers(nQubits)/uiPow(2,nQubits)){
         target = nStabilizers(nQubits)/uiPow(2,nQubits);
@@ -37,9 +40,9 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
         }
         generatorIndex = 0;
         if (realOnly){
-            if (std::all_of(generatorCandidates.begin(), generatorCandidates.end(), [](SymplecticPauli& p){
-                    return p.isReal();
-                }) == false)
+            if (!std::all_of(generatorCandidates.begin(), generatorCandidates.end(), [](SymplecticPauli& p){
+                                return p.isReal();
+                            }))
             {
                 continue;
             }
@@ -52,6 +55,9 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
         }
         if (groups.size()==0){
             groups.push_back(candidate);
+            if (verbose){
+                std::cout << "Found " + std::to_string(groups.size()) + " groups so far." << std::endl;
+            }
             continue;
         }
         if (std::none_of(groups.begin(), groups.end(), [&candidate](StabilizerMatrix& g){return candidate==g;})){
@@ -64,11 +70,11 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
     return groups;
 }
 
-std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, bool realOnly){
-    return getStabilizerGroups(nQubits, nStabilizers(nQubits), realOnly);
+std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, bool realOnly, bool verbose){
+    return getStabilizerGroups(nQubits, nStabilizers(nQubits), realOnly, verbose);
 }
 
-VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned int nStates){
+VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned int nStates, bool verbose){
     unsigned int nQubits = groups[0].NQubits();
     unsigned int nStabs, nPos;
     nStabs = nStabilizers(nQubits);
@@ -87,6 +93,9 @@ VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned in
             }
             placeholder = i->stabilizerState();
             states.push_back(placeholder);
+            if (verbose){
+                std::cout << "Got " + std::to_string(states.size()) + " states so far." << std::endl;
+            }
         }
     }
     else if (nStates > nPos && nStates < nStabs){
@@ -94,11 +103,17 @@ VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned in
         for (auto i=groups.cbegin(); i!=groups.cend(); i++){
             placeholder = i->stabilizerState();
             states.push_back(placeholder);
+            if (verbose){
+                std::cout << "Got " + std::to_string(states.size()) + " states so far." << std::endl;
+            }
         }
         for (unsigned int i=0; i< (nStates-nPos); i++){
             groups[i].setPhase(rand_phase()); //Uhh what about duplicates? Groups shuffle anyway so...
             placeholder = groups[i].stabilizerState();
             states.push_back(placeholder);
+            if (verbose){
+                std::cout << "Got " + std::to_string(states.size()) + " states so far." << std::endl;
+            }
         }
     }
     else {
@@ -107,19 +122,22 @@ VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned in
                 g->setPhase(i);
                 placeholder = g->stabilizerState();
                 states.push_back(placeholder);
+                if (verbose){
+                    std::cout << "Got " + std::to_string(states.size()) + " states so far." << std::endl;
+                }
             }
         }
     }
     return states;
 }
 
-VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates, bool realOnly){
-    std::vector<StabilizerMatrix> groups = getStabilizerGroups(nQubits, nStates, realOnly);
-    return getStabilizerStates(groups, nStates);
+VectorList getStabilizerStates(unsigned int nQubits, unsigned int nStates, bool realOnly, bool verbose){
+    std::vector<StabilizerMatrix> groups = getStabilizerGroups(nQubits, nStates, realOnly, verbose);
+    return getStabilizerStates(groups, nStates, verbose);
 }
 
-VectorList getStabilizerStates(unsigned int nQubits, bool realOnly){
-    return getStabilizerStates(nQubits, nStabilizers(nQubits), realOnly);
+VectorList getStabilizerStates(unsigned int nQubits, bool realOnly, bool verbose){
+    return getStabilizerStates(nQubits, nStabilizers(nQubits), realOnly, verbose);
 }
 
 StabilizerMatrix loadGroup(std::ifstream& is){
