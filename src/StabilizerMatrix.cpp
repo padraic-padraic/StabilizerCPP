@@ -57,6 +57,21 @@ StabilizerMatrix::StabilizerMatrix(std::vector<unsigned int> pauliNums){
     phase = 0;
 }
 
+void StabilizerMatrix::random()
+{
+    if (this->nQubits == 0){ return; }
+    for (auto i=this->generators.begin(); i!=this->generators.end(); i++) {i->setNum(0);}
+    SymplecticPauli new_p(this->nQubits);
+    for (unsigned int i=0; i<this->nQubits; i++)
+    {
+        new_p.random();
+        if (std::none_of(this->generators.cbegin(), this->generators.cend(), [&new_p](const SymplecticPauli& p){return new_p==p;}))
+        {
+            this->generators[i].setNum(new_p.toUlong());
+        }
+    }
+}
+
 const unsigned int& StabilizerMatrix::NQubits() const {
     return this->nQubits;
 }

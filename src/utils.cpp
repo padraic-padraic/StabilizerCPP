@@ -3,8 +3,21 @@
 //
 
 #include <algorithm>
+#include <chrono>
+#include <functional>
+#include <random>
 #include "lib/SymplecticPauli.h"
 #include "lib/utils.h"
+
+std::mt19937::result_type mt_seed = time(0);
+std::mt19937 mt(mt_seed);
+
+void reseedMt(void)
+{
+    mt_seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    mt.seed(mt_seed);
+    return;
+}
 
 unsigned int uiPow(unsigned int base, unsigned int exp) {
     unsigned int result = 1;

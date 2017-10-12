@@ -7,7 +7,16 @@
 
 #include <complex>
 #include <fstream>
+#include <random>
 #include <vector>
+
+
+extern std::mt19937::result_type mt_seed;
+extern std::mt19937 mt;
+extern std::bernoulli_distribution the_bernoulli_dist;
+extern bool (*uniform_bool)(void);
+
+void reseedMt(void);
 
 typedef std::complex<double> cd;
 

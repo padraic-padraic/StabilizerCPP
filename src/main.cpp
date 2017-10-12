@@ -1,7 +1,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <typeinfo>
-
+#include "lib/SymplecticPauli.h"
 
 int main(int argc, char *argv[]) {
     //Comment out as this wasn't building but the tests will run!
@@ -19,5 +19,10 @@ int main(int argc, char *argv[]) {
 //    if (vm.count("help") || argc==0){
 //        std::cout << desc << std::endl;
 //    }
+	SymplecticPauli p(4);
+	p.random();
+	std::cout << p << std::endl;
+	p.random();
+	std::cout << p << std::endl;
     return 0;
 }
