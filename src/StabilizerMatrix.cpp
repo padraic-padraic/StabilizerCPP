@@ -60,7 +60,7 @@ StabilizerMatrix::StabilizerMatrix(std::vector<unsigned int> pauliNums){
 void StabilizerMatrix::random()
 {
     if (this->nQubits == 0){ return; }
-    for (auto i=this->generators.begin(); i!=this->generators.end(); i++) {i->setNum(0);}
+    this->generators.assign(this->nQubits, SymplecticPauli(this->nQubits, 0));
     SymplecticPauli new_p(this->nQubits);
     for (unsigned int i=0; i<this->nQubits; i++)
     {
