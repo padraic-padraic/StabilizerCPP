@@ -8,6 +8,7 @@
 #include "boost/dynamic_bitset.hpp"
 #include "Eigen/Dense"
 #include <iostream>
+#include <random>
 #include <string>
 #include "PauliMatrices.h"
 
@@ -24,6 +25,7 @@ public:
     SymplecticPauli(const SymplecticPauli& p_copy);
     SymplecticPauli(std::string pauliLiterals);
 
+    void random();
     unsigned int NQubits() const;
     const dynamic_bitset<>& XBits() const;
     const dynamic_bitset<>& ZBits() const;
@@ -53,7 +55,11 @@ private:
     bInt nQubits;
     dynamic_bitset<> xBits;
     dynamic_bitset<> zBits;
+    static int seeded_mt;
+    static std::bernoulli_distribution uniform_bool;
     bool isNull() const;
+    void bindAndSeed();
+
 };
 
 bool commutivityTest(std::vector<SymplecticPauli>&);

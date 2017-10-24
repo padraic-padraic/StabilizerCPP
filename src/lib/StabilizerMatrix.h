@@ -37,6 +37,7 @@ public:
     StabilizerMatrix(unsigned int NQubits, std::vector<SymplecticPauli> paulis);
     StabilizerMatrix(std::vector<unsigned int> pauliNums);
 //    StabilizerMatrix(StabilizerMatrix& m);
+    void random();
     void toCanonicalForm();
     void setPhase(unsigned int p);
     bool linearlyIndependent() const;

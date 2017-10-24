@@ -3,6 +3,7 @@
 //
 
 #include <complex>
+#include <random>
 #include "boost/dynamic_bitset.hpp"
 #include "boost/exception/to_string.hpp"
 #include "Eigen/Dense"
@@ -13,26 +14,38 @@
 
 using namespace boost;
 
+int SymplecticPauli::seeded_mt = 0;
+std::bernoulli_distribution SymplecticPauli::uniform_bool(0.5);
+
+void SymplecticPauli::bindAndSeed()
+{
+    reseedMt();
+    this->seeded_mt = 1;
+}
 
 SymplecticPauli::SymplecticPauli(){
+    if (this->seeded_mt == 0){ this->bindAndSeed(); }
     nQubits = 0;
     xBits = dynamic_bitset<> (0);
     zBits = dynamic_bitset<> (0);
 }
 
 SymplecticPauli::SymplecticPauli(unsigned int NQubits){
+    if (this->seeded_mt == 0){ this->bindAndSeed(); }
     nQubits = NQubits;
     xBits = dynamic_bitset<> (NQubits);
     zBits = dynamic_bitset<> (NQubits);
 }
 
 SymplecticPauli::SymplecticPauli(unsigned int NQubits, unsigned int xNum, unsigned int zNum) {
+    if (this->seeded_mt == 0){ this->bindAndSeed(); }
     nQubits = NQubits;
     xBits =  dynamic_bitset<> (nQubits, xNum);
     zBits = dynamic_bitset<> (nQubits, zNum);
 }
 
 SymplecticPauli::SymplecticPauli(unsigned int NQubits, unsigned int Num) {
+    if (this->seeded_mt == 0){ this->bindAndSeed(); }
     unsigned int bnum, base=uiPow(2,NQubits);
     nQubits = NQubits;
     bnum = Num % base;
@@ -43,12 +56,14 @@ SymplecticPauli::SymplecticPauli(unsigned int NQubits, unsigned int Num) {
 }
 
 SymplecticPauli::SymplecticPauli(const SymplecticPauli& p){
+    if (this->seeded_mt == 0){ this->bindAndSeed(); }
     nQubits = p.nQubits;
     xBits = dynamic_bitset<>(p.xBits);
     zBits = dynamic_bitset<>(p.zBits);
 }
 
 SymplecticPauli::SymplecticPauli(std::string pauliLiterals) {
+    if (this->seeded_mt == 0){ this->bindAndSeed(); }
     nQubits = pauliLiterals.length();
     xBits = boost::dynamic_bitset<> (nQubits);
     zBits = boost::dynamic_bitset<> (nQubits);
@@ -69,6 +84,19 @@ SymplecticPauli::SymplecticPauli(std::string pauliLiterals) {
                 break;
         }
         counter++;
+    }
+}
+
+void SymplecticPauli::random() {
+    if (this->nQubits == 0)
+    {
+        return;
+    }
+//    reseed_mt();
+    for(unsigned int i = 0; i<this->nQubits; i++)
+    {
+        this->xBits[i] = this->uniform_bool(mt);
+        this->zBits[i] = this->uniform_bool(mt);
     }
 }
 

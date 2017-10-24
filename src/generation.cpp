@@ -10,20 +10,19 @@
 #include "lib/generation.h"
 #include "lib/utils.h"
 
-
-
 std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned int nStates, bool realOnly,
                                                   bool verbose){
-    unsigned int target;
+    unsigned int target, getAll=0;
     if (nStates > nStabilizers(nQubits)/uiPow(2,nQubits)){
         target = nStabilizers(nQubits)/uiPow(2,nQubits);
+        getAll = 1;
     }
     else {
         target = nStates;
     }
     unsigned int generatorIndex = 0;
     std::vector<StabilizerMatrix> groups;
-    std::vector<SymplecticPauli> paulis;
+    if (getAll==1) {std::vector<SymplecticPauli> paulis;
     for (unsigned int i=1; i<uiPow(2,2*nQubits); i++){
         paulis.push_back(SymplecticPauli(nQubits, i));
     }
@@ -41,8 +40,8 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
         generatorIndex = 0;
         if (realOnly){
             if (!std::all_of(generatorCandidates.begin(), generatorCandidates.end(), [](SymplecticPauli& p){
-                                return p.isReal();
-                            }))
+                    return p.isReal();
+                }) )
             {
                 continue;
             }
@@ -57,19 +56,41 @@ std::vector<StabilizerMatrix> getStabilizerGroups(unsigned int nQubits, unsigned
             groups.push_back(candidate);
             if (verbose){
                 std::cout << "Found " + std::to_string(groups.size()) + " groups so far." << std::endl;
-            }
-            continue;
+            }continue;
         }
         if (std::none_of(groups.begin(), groups.end(), [&candidate](StabilizerMatrix& g){return candidate==g;})){
-            groups.push_back(candidate);
-            if (verbose){
+            groups.push_back(candidate);if (verbose){
                 std::cout << "Found " + std::to_string(groups.size()) + " groups so far." << std::endl;
             }
         }
         if (groups.size()==target){
             break;
         }
-    } while(std::next_permutation(mask.begin(), mask.end()));
+    } while(std::next_permutation(mask.begin(), mask.end()));} else {
+        do {
+            StabilizerMatrix candidate(nQubits);
+            candidate.random();
+            candidate.toCanonicalForm();
+            if (!candidate.linearlyIndependent()) {
+                continue;
+            }
+            if (realOnly) {
+                if (!std::all_of(candidate.Generators().cbegin(), candidate.Generators().cend(), [](const SymplecticPauli &p) {
+                    return p.isReal();
+                })) {
+                    continue;
+                }
+            }
+            if (groups.size() == 0) {
+                groups.push_back(candidate);
+                continue;
+            }
+            if (std::none_of(groups.begin(), groups.end(),
+                             [&candidate](StabilizerMatrix &g) { return candidate == g; })) {
+                groups.push_back(candidate);
+            }
+        } while (groups.size() < target);
+    }
     return groups;
 }
 
@@ -84,12 +105,12 @@ VectorList getStabilizerStates(std::vector<StabilizerMatrix> groups, unsigned in
     nPos = nStabs/uiPow(2, nQubits);
     Eigen::VectorXcd placeholder;
     VectorList states;
-    std::mt19937::result_type seed = time(0);
+    reseedMt();
     auto rand_phase = std::bind(std::uniform_int_distribution<unsigned int>(1,uiPow(2,nQubits)),
-                                std::mt19937(seed));
+                                mt);
     if (nStates <= nPos){
         auto rand_real = std::bind(std::uniform_real_distribution<double>(0,1),
-                                   std::mt19937(seed));
+                                   mt);
         for (auto i=groups.begin(); i!=groups.end(); i++){
             if (rand_real() > 0.5){
                 i->setPhase(rand_phase());
